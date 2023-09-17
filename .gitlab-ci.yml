@@ -1,0 +1,18 @@
+default:
+    image: emtest:latest
+    tags: 
+        - pv198
+
+stages:
+    - test
+
+test:
+    stage: test
+    script:
+        - /emtest/run_ci_tests.zsh
+    rules:
+        - if: '$CI_COMMIT_TAG =~ /^Submission_[0-9]+_[0-9]$/'
+    artifacts:
+        when: always
+        reports:
+            junit: report.xml
