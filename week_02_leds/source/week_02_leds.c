@@ -5,10 +5,11 @@
 #include "clock_config.h"
 #include "MK66F18.h"
 #include "fsl_debug_console.h"
+#include <stdbool.h>
 
 void delay(void) {
     volatile uint32_t i = 0;
-	for (i = 0; i < 4000000; ++i) {
+	for (i = 0; i < 80000; ++i) {
         __asm("NOP"); /* delay */
     }
 }
@@ -44,17 +45,26 @@ int main(void) {
     GPIO_PortToggle(BOARD_LED_BLUE_GPIO, 1u << BOARD_LED_BLUE_GPIO_PIN);
 
     int color = 0;
+    bool sw2, sw3;
+    bool sw2_prev = true, sw3_prev = true;
     while (1) {
-    	if (!GPIO_PinRead(GPIOD, 11)) {
-    		++color;
-    		color %= 3;
+    	sw2 = GPIO_PinRead(GPIOD, 11);
+    	sw3 = GPIO_PinRead(GPIOA, 10);
+    	if (!sw2 && sw2_prev) {
     		delay();
+    		if (!GPIO_PinRead(GPIOD, 11)) {
+    			++color;
+    			color %= 3;
+    		}
     	}
-
-    	if (!GPIO_PinRead(GPIOA, 10)) {
-    		toggle_led(color);
+    	if (!sw3 && sw3_prev) {
     		delay();
+    		if (!GPIO_PinRead(GPIOA, 10)) {
+        		toggle_led(color);
+    		}
     	}
+    	sw2_prev = sw2;
+    	sw3_prev = sw3;
     }
     return 0;
 }
