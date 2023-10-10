@@ -179,6 +179,8 @@ pin_labels:
 void BOARD_InitBootPins(void)
 {
     BOARD_InitPins();
+    BOARD_InitBUTTONsPins();
+    BOARD_InitLEDsPins();
     BOARD_InitDEBUG_UARTPins();
 }
 
@@ -189,11 +191,6 @@ BOARD_InitPins:
 - options: {callFromInitBoot: 'true', prefix: BOARD_, coreID: core0, enableClock: 'true'}
 - pin_list:
   - {pin_num: K6, peripheral: TPIU, signal: SWO, pin_signal: TSI0_CH3/PTA2/UART0_TX/FTM0_CH7/I2C3_SCL/LPUART0_TX/JTAG_TDO/TRACE_SWO/EZP_DO, pull_select: down, pull_enable: disable}
-  - {pin_num: M9, peripheral: GPIOA, signal: 'GPIO, 10', pin_signal: PTA10/LLWU_P22/FTM2_CH0/MII0_RXD2/FTM2_QD_PHA/TPM2_CH0/TRACE_D0, identifier: '', direction: INPUT}
-  - {pin_num: B2, peripheral: GPIOD, signal: 'GPIO, 11', pin_signal: PTD11/LLWU_P25/SPI2_PCS0/SDHC0_CLKIN/LPUART0_CTS_b/FB_A19, identifier: '', direction: INPUT}
-  - {pin_num: E1, peripheral: GPIOE, signal: 'GPIO, 6', pin_signal: PTE6/LLWU_P16/SPI1_PCS3/UART3_CTS_b/I2S0_MCLK/FTM3_CH1/USB0_SOF_OUT, identifier: '', direction: OUTPUT}
-  - {pin_num: L9, peripheral: GPIOA, signal: 'GPIO, 11', pin_signal: PTA11/LLWU_P23/FTM2_CH1/MII0_RXCLK/I2C2_SDA/FTM2_QD_PHB/TPM2_CH1, identifier: '', direction: OUTPUT}
-  - {pin_num: D7, peripheral: GPIOC, signal: 'GPIO, 9', pin_signal: ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/SDRAM_A14/FTM2_FLT0, identifier: '', direction: OUTPUT}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -208,53 +205,6 @@ void BOARD_InitPins(void)
 {
     /* Port A Clock Gate Control: Clock enabled */
     CLOCK_EnableClock(kCLOCK_PortA);
-    /* Port C Clock Gate Control: Clock enabled */
-    CLOCK_EnableClock(kCLOCK_PortC);
-    /* Port D Clock Gate Control: Clock enabled */
-    CLOCK_EnableClock(kCLOCK_PortD);
-    /* Port E Clock Gate Control: Clock enabled */
-    CLOCK_EnableClock(kCLOCK_PortE);
-
-    gpio_pin_config_t gpioa_pinM9_config = {
-        .pinDirection = kGPIO_DigitalInput,
-        .outputLogic = 0U
-    };
-    /* Initialize GPIO functionality on pin PTA10 (pin M9)  */
-    GPIO_PinInit(GPIOA, 10U, &gpioa_pinM9_config);
-
-    gpio_pin_config_t gpioa_pinL9_config = {
-        .pinDirection = kGPIO_DigitalOutput,
-        .outputLogic = 0U
-    };
-    /* Initialize GPIO functionality on pin PTA11 (pin L9)  */
-    GPIO_PinInit(GPIOA, 11U, &gpioa_pinL9_config);
-
-    gpio_pin_config_t gpioc_pinD7_config = {
-        .pinDirection = kGPIO_DigitalOutput,
-        .outputLogic = 0U
-    };
-    /* Initialize GPIO functionality on pin PTC9 (pin D7)  */
-    GPIO_PinInit(GPIOC, 9U, &gpioc_pinD7_config);
-
-    gpio_pin_config_t gpiod_pinB2_config = {
-        .pinDirection = kGPIO_DigitalInput,
-        .outputLogic = 0U
-    };
-    /* Initialize GPIO functionality on pin PTD11 (pin B2)  */
-    GPIO_PinInit(GPIOD, 11U, &gpiod_pinB2_config);
-
-    gpio_pin_config_t gpioe_pinE1_config = {
-        .pinDirection = kGPIO_DigitalOutput,
-        .outputLogic = 0U
-    };
-    /* Initialize GPIO functionality on pin PTE6 (pin E1)  */
-    GPIO_PinInit(GPIOE, 6U, &gpioe_pinE1_config);
-
-    /* PORTA10 (pin M9) is configured as PTA10 */
-    PORT_SetPinMux(PORTA, 10U, kPORT_MuxAsGpio);
-
-    /* PORTA11 (pin L9) is configured as PTA11 */
-    PORT_SetPinMux(PORTA, 11U, kPORT_MuxAsGpio);
 
     /* PORTA2 (pin K6) is configured as TRACE_SWO */
     PORT_SetPinMux(BOARD_TRACE_SWO_PORT, BOARD_TRACE_SWO_PIN, kPORT_MuxAlt7);
@@ -269,22 +219,13 @@ void BOARD_InitPins(void)
 
                      /* Pull Enable: Internal pullup or pulldown resistor is not enabled on the corresponding pin. */
                      | PORT_PCR_PE(kPORT_PullDisable));
-
-    /* PORTC9 (pin D7) is configured as PTC9 */
-    PORT_SetPinMux(PORTC, 9U, kPORT_MuxAsGpio);
-
-    /* PORTD11 (pin B2) is configured as PTD11 */
-    PORT_SetPinMux(PORTD, 11U, kPORT_MuxAsGpio);
-
-    /* PORTE6 (pin E1) is configured as PTE6 */
-    PORT_SetPinMux(PORTE, 6U, kPORT_MuxAsGpio);
 }
 
 /* clang-format off */
 /*
  * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 BOARD_InitBUTTONsPins:
-- options: {prefix: BOARD_, coreID: core0, enableClock: 'true'}
+- options: {callFromInitBoot: 'true', prefix: BOARD_, coreID: core0, enableClock: 'true'}
 - pin_list:
   - {pin_num: B2, peripheral: GPIOD, signal: 'GPIO, 11', pin_signal: PTD11/LLWU_P25/SPI2_PCS0/SDHC0_CLKIN/LPUART0_CTS_b/FB_A19, direction: INPUT, gpio_interrupt: kPORT_InterruptFallingEdge,
     pull_select: up, pull_enable: enable}
@@ -354,7 +295,7 @@ void BOARD_InitBUTTONsPins(void)
 /*
  * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 BOARD_InitLEDsPins:
-- options: {prefix: BOARD_, coreID: core0, enableClock: 'true'}
+- options: {callFromInitBoot: 'true', prefix: BOARD_, coreID: core0, enableClock: 'true'}
 - pin_list:
   - {pin_num: L9, peripheral: GPIOA, signal: 'GPIO, 11', pin_signal: PTA11/LLWU_P23/FTM2_CH1/MII0_RXCLK/I2C2_SDA/FTM2_QD_PHB/TPM2_CH1, direction: OUTPUT, gpio_init_state: 'true',
     slew_rate: fast, open_drain: disable, pull_select: down, pull_enable: disable}

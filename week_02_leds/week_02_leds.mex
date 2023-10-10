@@ -197,11 +197,6 @@
                         <data>true</data>
                      </feature>
                   </dependency>
-                  <dependency resourceType="SWComponent" resourceId="platform.drivers.gpio" description="Pins initialization requires the GPIO Driver in the project." problem_level="2" source="Pins:BOARD_InitPins">
-                     <feature name="enabled" evaluation="equal" configuration="core0">
-                        <data>true</data>
-                     </feature>
-                  </dependency>
                </dependencies>
                <pins>
                   <pin peripheral="TPIU" signal="SWO" pin_num="K6" pin_signal="TSI0_CH3/PTA2/UART0_TX/FTM0_CH7/I2C3_SCL/LPUART0_TX/JTAG_TDO/TRACE_SWO/EZP_DO">
@@ -210,41 +205,12 @@
                         <pin_feature name="pull_enable" value="disable"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="GPIOA" signal="GPIO, 10" pin_num="M9" pin_signal="PTA10/LLWU_P22/FTM2_CH0/MII0_RXD2/FTM2_QD_PHA/TPM2_CH0/TRACE_D0">
-                     <pin_features>
-                        <pin_feature name="identifier" value=""/>
-                        <pin_feature name="direction" value="INPUT"/>
-                     </pin_features>
-                  </pin>
-                  <pin peripheral="GPIOD" signal="GPIO, 11" pin_num="B2" pin_signal="PTD11/LLWU_P25/SPI2_PCS0/SDHC0_CLKIN/LPUART0_CTS_b/FB_A19">
-                     <pin_features>
-                        <pin_feature name="identifier" value=""/>
-                        <pin_feature name="direction" value="INPUT"/>
-                     </pin_features>
-                  </pin>
-                  <pin peripheral="GPIOE" signal="GPIO, 6" pin_num="E1" pin_signal="PTE6/LLWU_P16/SPI1_PCS3/UART3_CTS_b/I2S0_MCLK/FTM3_CH1/USB0_SOF_OUT">
-                     <pin_features>
-                        <pin_feature name="identifier" value=""/>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                     </pin_features>
-                  </pin>
-                  <pin peripheral="GPIOA" signal="GPIO, 11" pin_num="L9" pin_signal="PTA11/LLWU_P23/FTM2_CH1/MII0_RXCLK/I2C2_SDA/FTM2_QD_PHB/TPM2_CH1">
-                     <pin_features>
-                        <pin_feature name="identifier" value=""/>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                     </pin_features>
-                  </pin>
-                  <pin peripheral="GPIOC" signal="GPIO, 9" pin_num="D7" pin_signal="ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/SDRAM_A14/FTM2_FLT0">
-                     <pin_features>
-                        <pin_feature name="identifier" value=""/>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                     </pin_features>
-                  </pin>
                </pins>
             </function>
             <function name="BOARD_InitBUTTONsPins">
                <description>Configures pin routing and optionally pin electrical features.</description>
                <options>
+                  <callFromInitBoot>true</callFromInitBoot>
                   <prefix>BOARD_</prefix>
                   <coreID>core0</coreID>
                   <enableClock>true</enableClock>
@@ -298,6 +264,7 @@
             <function name="BOARD_InitLEDsPins">
                <description>Configures pin routing and optionally pin electrical features.</description>
                <options>
+                  <callFromInitBoot>true</callFromInitBoot>
                   <prefix>BOARD_</prefix>
                   <coreID>core0</coreID>
                   <enableClock>true</enableClock>
