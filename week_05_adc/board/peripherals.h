@@ -11,7 +11,6 @@
  **********************************************************************************************************************/
 #include "fsl_common.h"
 #include "fsl_adc16.h"
-#include "fsl_pit.h"
 #include "fsl_clock.h"
 #include "fsl_ftm.h"
 
@@ -29,31 +28,10 @@ extern "C" {
 #define ADC1_IRQN ADC1_IRQn
 /* ADC1 interrupt handler identifier. */
 #define ADC1_IRQHANDLER ADC1_IRQHandler
-/* Channel 0 (SE.12) conversion control group. */
+/* Channel 0 (SE.13) conversion control group. */
 #define ADC1_CH0_CONTROL_GROUP 0
-/* Channel 1 (SE.13) conversion control group. */
+/* Channel 1 (SE.16) conversion control group. */
 #define ADC1_CH1_CONTROL_GROUP 1
-/* BOARD_InitPeripherals defines for PIT */
-/* Definition of peripheral ID. */
-#define PIT_PERIPHERAL PIT
-/* Definition of clock source. */
-#define PIT_CLOCK_SOURCE kCLOCK_BusClk
-/* Definition of clock source frequency. */
-#define PIT_CLK_FREQ CLOCK_GetFreq(PIT_CLOCK_SOURCE)
-/* Definition of ticks count for channel 0 - deprecated. */
-#define PIT_0_TICKS USEC_TO_COUNT(1000000U, PIT_CLK_FREQ)
-/* PIT interrupt vector ID (number) - deprecated. */
-#define PIT_0_IRQN PIT0_IRQn
-/* PIT interrupt handler identifier - deprecated. */
-#define PIT_0_IRQHANDLER PIT0_IRQHandler
-/* Definition of channel number for channel 0. */
-#define PIT_CHANNEL_0 kPIT_Chnl_0
-/* Definition of ticks count for channel 0. */
-#define PIT_CHANNEL_0_TICKS USEC_TO_COUNT(1000000U, PIT_CLK_FREQ)
-/* PIT interrupt vector ID (number). */
-#define PIT_CHANNEL_0_IRQN PIT0_IRQn
-/* PIT interrupt handler identifier. */
-#define PIT_CHANNEL_0_IRQHANDLER PIT0_IRQHandler
 /* Definition of peripheral ID */
 #define FTM3_PERIPHERAL FTM3
 /* Definition of the clock source frequency */
@@ -67,7 +45,6 @@ extern "C" {
 extern adc16_channel_config_t ADC1_channelsConfig[2];
 extern const adc16_config_t ADC1_config;
 extern const adc16_channel_mux_mode_t ADC1_muxMode;
-extern const pit_config_t PIT_config;
 extern const ftm_config_t FTM3_config;
 
 /***********************************************************************************************************************

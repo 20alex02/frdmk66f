@@ -190,7 +190,7 @@ BOARD_InitPins:
 - options: {callFromInitBoot: 'true', prefix: BOARD_, coreID: core0, enableClock: 'true'}
 - pin_list:
   - {pin_num: K6, peripheral: TPIU, signal: SWO, pin_signal: TSI0_CH3/PTA2/UART0_TX/FTM0_CH7/I2C3_SCL/LPUART0_TX/JTAG_TDO/TRACE_SWO/EZP_DO, pull_select: down, pull_enable: disable}
-  - {pin_num: F12, peripheral: ADC1, signal: 'SE, 12', pin_signal: ADC1_SE12/PTB6/FB_AD23/SDRAM_D23}
+  - {pin_num: K3, peripheral: ADC1, signal: 'SE, 16', pin_signal: ADC1_SE16/CMP2_IN2/ADC0_SE22}
   - {pin_num: F11, peripheral: ADC1, signal: 'SE, 13', pin_signal: ADC1_SE13/PTB7/FB_AD22/SDRAM_D22}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
@@ -222,9 +222,6 @@ void BOARD_InitPins(void)
 
                      /* Pull Enable: Internal pullup or pulldown resistor is not enabled on the corresponding pin. */
                      | PORT_PCR_PE(kPORT_PullDisable));
-
-    /* PORTB6 (pin F12) is configured as ADC1_SE12 */
-    PORT_SetPinMux(BOARD_ADC1_SE12_PORT, BOARD_ADC1_SE12_PIN, kPORT_PinDisabledOrAnalog);
 
     /* PORTB7 (pin F11) is configured as ADC1_SE13 */
     PORT_SetPinMux(BOARD_ADC1_SE13_PORT, BOARD_ADC1_SE13_PIN, kPORT_PinDisabledOrAnalog);

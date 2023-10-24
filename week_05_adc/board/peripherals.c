@@ -70,7 +70,6 @@ instance:
   - nvic:
     - interrupt_table:
       - 0: []
-      - 1: []
     - interrupts: []
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
@@ -123,14 +122,14 @@ instance:
       - 0:
         - channelName: ''
         - enableDifferentialConversion: 'false'
-        - channelNumber: 'SE.12'
+        - channelNumber: 'SE.13'
         - enableInterruptOnConversionCompleted: 'true'
         - channelGroup: '0'
         - initializeChannel: 'false'
       - 1:
         - channelName: ''
         - enableDifferentialConversion: 'false'
-        - channelNumber: 'SE.13'
+        - channelNumber: 'SE.16'
         - enableInterruptOnConversionCompleted: 'true'
         - channelGroup: '1'
         - initializeChannel: 'false'
@@ -138,12 +137,12 @@ instance:
 /* clang-format on */
 adc16_channel_config_t ADC1_channelsConfig[2] = {
   {
-    .channelNumber = 12U,
+    .channelNumber = 13U,
     .enableDifferentialConversion = false,
     .enableInterruptOnConversionCompleted = true,
   },
   {
-    .channelNumber = 13U,
+    .channelNumber = 16U,
     .enableDifferentialConversion = false,
     .enableInterruptOnConversionCompleted = true,
   }
@@ -171,59 +170,6 @@ static void ADC1_init(void) {
   ADC16_SetChannelMuxMode(ADC1_PERIPHERAL, ADC1_muxMode);
   /* Enable interrupt ADC1_IRQn request in the NVIC. */
   EnableIRQ(ADC1_IRQN);
-}
-
-/***********************************************************************************************************************
- * PIT initialization code
- **********************************************************************************************************************/
-/* clang-format off */
-/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
-instance:
-- name: 'PIT'
-- type: 'pit'
-- mode: 'LPTMR_GENERAL'
-- custom_name_enabled: 'false'
-- type_id: 'pit_ab54f91356454adb874dafbb69e655fd'
-- functional_group: 'BOARD_InitPeripherals'
-- peripheral: 'PIT'
-- config_sets:
-  - fsl_pit:
-    - enableRunInDebug: 'false'
-    - timingConfig:
-      - clockSource: 'BusInterfaceClock'
-      - clockSourceFreq: 'GetFreq'
-    - channels:
-      - 0:
-        - channel_id: 'CHANNEL_0'
-        - channelNumber: '0'
-        - enableChain: 'false'
-        - timerPeriod: '1s'
-        - startTimer: 'true'
-        - enableInterrupt: 'true'
-        - interrupt:
-          - IRQn: 'PIT0_IRQn'
-          - enable_interrrupt: 'enabled'
-          - enable_priority: 'false'
-          - priority: '0'
-          - enable_custom_name: 'false'
-    - quick_selection: 'QS_PIT_1'
- * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
-/* clang-format on */
-const pit_config_t PIT_config = {
-  .enableRunInDebug = false
-};
-
-static void PIT_init(void) {
-  /* Initialize the PIT. */
-  PIT_Init(PIT_PERIPHERAL, &PIT_config);
-  /* Set channel 0 period to N/A. */
-  PIT_SetTimerPeriod(PIT_PERIPHERAL, PIT_CHANNEL_0, PIT_CHANNEL_0_TICKS);
-  /* Enable interrupts from channel 0. */
-  PIT_EnableInterrupts(PIT_PERIPHERAL, PIT_CHANNEL_0, kPIT_TimerInterruptEnable);
-  /* Enable interrupt PIT_CHANNEL_0_IRQN request in the NVIC */
-  EnableIRQ(PIT_CHANNEL_0_IRQN);
-  /* Start channel 0. */
-  PIT_StartTimer(PIT_PERIPHERAL, PIT_CHANNEL_0);
 }
 
 /***********************************************************************************************************************
@@ -279,7 +225,7 @@ instance:
     - timer_interrupts: ''
     - enable_irq: 'false'
     - ftm_interrupt:
-      - IRQn: 'FTM0_IRQn'
+      - IRQn: 'FTM3_IRQn'
       - enable_interrrupt: 'enabled'
       - enable_priority: 'false'
       - priority: '0'
@@ -348,7 +294,6 @@ void BOARD_InitPeripherals(void)
 {
   /* Initialize components */
   ADC1_init();
-  PIT_init();
   FTM3_init();
 }
 

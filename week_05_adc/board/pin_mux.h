@@ -34,14 +34,9 @@ void BOARD_InitBootPins(void);
 #define BOARD_TRACE_SWO_PIN_MASK (1U << 2U)      /*!<@brief PORT pin mask */
                                                  /* @} */
 
-/*! @name PORTB6 (coord F12), J4[4]/ADC1_SE12
+/*! @name ADC1_SE16 (coord K3), J4[7]/ADC1
   @{ */
-
-/* Symbols to be used with PORT driver */
-#define BOARD_ADC1_SE12_PORT PORTB               /*!<@brief PORT peripheral base pointer */
-#define BOARD_ADC1_SE12_PIN 6U                   /*!<@brief PORT pin number */
-#define BOARD_ADC1_SE12_PIN_MASK (1U << 6U)      /*!<@brief PORT pin mask */
-                                                 /* @} */
+/* @} */
 
 /*! @name PORTB7 (coord F11), J4[2]/ADC1_SE13
   @{ */

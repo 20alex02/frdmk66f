@@ -210,7 +210,7 @@
                         <pin_feature name="pull_enable" value="disable"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="ADC1" signal="SE, 12" pin_num="F12" pin_signal="ADC1_SE12/PTB6/FB_AD23/SDRAM_D23"/>
+                  <pin peripheral="ADC1" signal="SE, 16" pin_num="K3" pin_signal="ADC1_SE16/CMP2_IN2/ADC0_SE22"/>
                   <pin peripheral="ADC1" signal="SE, 13" pin_num="F11" pin_signal="ADC1_SE13/PTB7/FB_AD22/SDRAM_D22"/>
                </pins>
             </function>
@@ -1040,16 +1040,6 @@
                   <data type="Version">2.2.0</data>
                </feature>
             </dependency>
-            <dependency resourceType="SWComponent" resourceId="platform.drivers.pit" description="PIT Driver not found in the toolchain/IDE project. Project will not compile!" problem_level="2" source="Peripherals">
-               <feature name="enabled" evaluation="equal">
-                  <data type="Boolean">true</data>
-               </feature>
-            </dependency>
-            <dependency resourceType="SWComponent" resourceId="platform.drivers.pit" description="Unsupported version of the PIT Driver in the toolchain/IDE project. Required: ${required_value}, actual: ${actual_value}. Project might not compile correctly." problem_level="1" source="Peripherals">
-               <feature name="version" evaluation="compatible">
-                  <data type="Version">2.0.3</data>
-               </feature>
-            </dependency>
             <dependency resourceType="SWComponent" resourceId="platform.drivers.ftm" description="FTM Driver not found in the toolchain/IDE project. Project will not compile!" problem_level="2" source="Peripherals">
                <feature name="enabled" evaluation="equal">
                   <data type="Boolean">true</data>
@@ -1073,19 +1063,14 @@
                <description></description>
                <options/>
                <dependencies>
-                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="ADC1.adc_se.12" description="Signal SE, channel 12 is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
-                     <feature name="routed" evaluation="">
-                        <data type="Boolean">true</data>
-                     </feature>
-                  </dependency>
                   <dependency resourceType="PeripheralUnifiedSignal" resourceId="ADC1.adc_se.13" description="Signal SE, channel 13 is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
                      <feature name="routed" evaluation="">
                         <data type="Boolean">true</data>
                      </feature>
                   </dependency>
-                  <dependency resourceType="ClockOutput" resourceId="Bus_clock" description="Bus clock is inactive." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
-                     <feature name="frequency" evaluation="greaterThan">
-                        <data type="Frequency" unit="Hz">0</data>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="ADC1.adc_se.16" description="Signal SE, channel 16 is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="routed" evaluation="">
+                        <data type="Boolean">true</data>
                      </feature>
                   </dependency>
                   <dependency resourceType="ClockOutput" resourceId="Bus_clock" description="Bus clock is inactive." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
@@ -1124,7 +1109,6 @@
                      <config_set name="nvic">
                         <array name="interrupt_table">
                            <struct name="0"/>
-                           <struct name="1"/>
                         </array>
                         <array name="interrupts"/>
                      </config_set>
@@ -1163,7 +1147,7 @@
                            <struct name="0">
                               <setting name="channelName" value=""/>
                               <setting name="enableDifferentialConversion" value="false"/>
-                              <setting name="channelNumber" value="SE.12"/>
+                              <setting name="channelNumber" value="SE.13"/>
                               <setting name="enableInterruptOnConversionCompleted" value="true"/>
                               <setting name="channelGroup" value="0"/>
                               <setting name="initializeChannel" value="false"/>
@@ -1171,36 +1155,10 @@
                            <struct name="1">
                               <setting name="channelName" value=""/>
                               <setting name="enableDifferentialConversion" value="false"/>
-                              <setting name="channelNumber" value="SE.13"/>
+                              <setting name="channelNumber" value="SE.16"/>
                               <setting name="enableInterruptOnConversionCompleted" value="true"/>
                               <setting name="channelGroup" value="1"/>
                               <setting name="initializeChannel" value="false"/>
-                           </struct>
-                        </array>
-                     </config_set>
-                  </instance>
-                  <instance name="PIT" uuid="565654f8-bf13-4d6f-8e6d-4727b40eec98" type="pit" type_id="pit_ab54f91356454adb874dafbb69e655fd" mode="LPTMR_GENERAL" peripheral="PIT" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
-                     <config_set name="fsl_pit" quick_selection="QS_PIT_1">
-                        <setting name="enableRunInDebug" value="false"/>
-                        <struct name="timingConfig">
-                           <setting name="clockSource" value="BusInterfaceClock"/>
-                           <setting name="clockSourceFreq" value="GetFreq"/>
-                        </struct>
-                        <array name="channels">
-                           <struct name="0">
-                              <setting name="channel_id" value="CHANNEL_0"/>
-                              <setting name="channelNumber" value="0"/>
-                              <setting name="enableChain" value="false"/>
-                              <setting name="timerPeriod" value="1s"/>
-                              <setting name="startTimer" value="true"/>
-                              <setting name="enableInterrupt" value="true"/>
-                              <struct name="interrupt">
-                                 <setting name="IRQn" value="PIT0_IRQn"/>
-                                 <setting name="enable_interrrupt" value="enabled"/>
-                                 <setting name="enable_priority" value="false"/>
-                                 <setting name="priority" value="0"/>
-                                 <setting name="enable_custom_name" value="false"/>
-                              </struct>
                            </struct>
                         </array>
                      </config_set>
@@ -1265,7 +1223,7 @@
                         </set>
                         <setting name="enable_irq" value="false"/>
                         <struct name="ftm_interrupt">
-                           <setting name="IRQn" value="FTM0_IRQn"/>
+                           <setting name="IRQn" value="FTM3_IRQn"/>
                            <setting name="enable_interrrupt" value="enabled"/>
                            <setting name="enable_priority" value="false"/>
                            <setting name="priority" value="0"/>
