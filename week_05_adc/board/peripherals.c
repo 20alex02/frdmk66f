@@ -68,7 +68,9 @@ instance:
 - peripheral: 'NVIC'
 - config_sets:
   - nvic:
-    - interrupt_table: []
+    - interrupt_table:
+      - 0: []
+      - 1: []
     - interrupts: []
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
@@ -110,9 +112,9 @@ instance:
     - offset: '0'
     - trigger: 'false'
     - enable_dma: 'false'
-    - enable_irq: 'false'
+    - enable_irq: 'true'
     - adc_interrupt:
-      - IRQn: 'ADC0_IRQn'
+      - IRQn: 'ADC1_IRQn'
       - enable_interrrupt: 'enabled'
       - enable_priority: 'false'
       - priority: '0'
@@ -121,29 +123,29 @@ instance:
       - 0:
         - channelName: ''
         - enableDifferentialConversion: 'false'
-        - channelNumber: 'SE.4a'
-        - enableInterruptOnConversionCompleted: 'false'
+        - channelNumber: 'SE.12'
+        - enableInterruptOnConversionCompleted: 'true'
         - channelGroup: '0'
         - initializeChannel: 'false'
       - 1:
         - channelName: ''
         - enableDifferentialConversion: 'false'
-        - channelNumber: 'SE.4a'
-        - enableInterruptOnConversionCompleted: 'false'
+        - channelNumber: 'SE.13'
+        - enableInterruptOnConversionCompleted: 'true'
         - channelGroup: '1'
         - initializeChannel: 'false'
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
 adc16_channel_config_t ADC1_channelsConfig[2] = {
   {
-    .channelNumber = 4U,
+    .channelNumber = 12U,
     .enableDifferentialConversion = false,
-    .enableInterruptOnConversionCompleted = false,
+    .enableInterruptOnConversionCompleted = true,
   },
   {
-    .channelNumber = 4U,
+    .channelNumber = 13U,
     .enableDifferentialConversion = false,
-    .enableInterruptOnConversionCompleted = false,
+    .enableInterruptOnConversionCompleted = true,
   }
 };
 const adc16_config_t ADC1_config = {
@@ -167,6 +169,176 @@ static void ADC1_init(void) {
   ADC16_EnableHardwareTrigger(ADC1_PERIPHERAL, false);
   /* Configure channel multiplexing mode */
   ADC16_SetChannelMuxMode(ADC1_PERIPHERAL, ADC1_muxMode);
+  /* Enable interrupt ADC1_IRQn request in the NVIC. */
+  EnableIRQ(ADC1_IRQN);
+}
+
+/***********************************************************************************************************************
+ * PIT initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'PIT'
+- type: 'pit'
+- mode: 'LPTMR_GENERAL'
+- custom_name_enabled: 'false'
+- type_id: 'pit_ab54f91356454adb874dafbb69e655fd'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'PIT'
+- config_sets:
+  - fsl_pit:
+    - enableRunInDebug: 'false'
+    - timingConfig:
+      - clockSource: 'BusInterfaceClock'
+      - clockSourceFreq: 'GetFreq'
+    - channels:
+      - 0:
+        - channel_id: 'CHANNEL_0'
+        - channelNumber: '0'
+        - enableChain: 'false'
+        - timerPeriod: '1s'
+        - startTimer: 'true'
+        - enableInterrupt: 'true'
+        - interrupt:
+          - IRQn: 'PIT0_IRQn'
+          - enable_interrrupt: 'enabled'
+          - enable_priority: 'false'
+          - priority: '0'
+          - enable_custom_name: 'false'
+    - quick_selection: 'QS_PIT_1'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+const pit_config_t PIT_config = {
+  .enableRunInDebug = false
+};
+
+static void PIT_init(void) {
+  /* Initialize the PIT. */
+  PIT_Init(PIT_PERIPHERAL, &PIT_config);
+  /* Set channel 0 period to N/A. */
+  PIT_SetTimerPeriod(PIT_PERIPHERAL, PIT_CHANNEL_0, PIT_CHANNEL_0_TICKS);
+  /* Enable interrupts from channel 0. */
+  PIT_EnableInterrupts(PIT_PERIPHERAL, PIT_CHANNEL_0, kPIT_TimerInterruptEnable);
+  /* Enable interrupt PIT_CHANNEL_0_IRQN request in the NVIC */
+  EnableIRQ(PIT_CHANNEL_0_IRQN);
+  /* Start channel 0. */
+  PIT_StartTimer(PIT_PERIPHERAL, PIT_CHANNEL_0);
+}
+
+/***********************************************************************************************************************
+ * FTM3 initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'FTM3'
+- type: 'ftm'
+- mode: 'EdgeAligned'
+- custom_name_enabled: 'false'
+- type_id: 'ftm_a206ca22312775f3c8a462078188c129'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'FTM3'
+- config_sets:
+  - ftm_main_config:
+    - ftm_config:
+      - clockSource: 'kFTM_SystemClock'
+      - clockSourceFreq: 'GetFreq'
+      - timerPrescaler: '1'
+      - timerOutputFrequency: '10 kHz'
+      - systemClockSource: 'BusInterfaceClock'
+      - systemClockSourceFreq: 'mirrored_value'
+      - faultMode: 'kFTM_Fault_Disable'
+      - inputFilterPeriod: '1'
+      - faultInputs:
+        - 0:
+          - enableFaultInput: 'false'
+          - faultLevelVal: 'low'
+          - useFaultFilter: 'false'
+        - 1:
+          - enableFaultInput: 'false'
+          - faultLevelVal: 'low'
+          - useFaultFilter: 'false'
+        - 2:
+          - enableFaultInput: 'false'
+          - faultLevelVal: 'low'
+          - useFaultFilter: 'false'
+        - 3:
+          - enableFaultInput: 'false'
+          - faultLevelVal: 'low'
+          - useFaultFilter: 'false'
+      - deadTimePrescale: 'kFTM_Deadtime_Prescale_1'
+      - deadTimePeriod: '0'
+      - pwmSyncMode: 'kFTM_SoftwareTrigger'
+      - reloadPoints: ''
+      - extTriggers: ''
+      - chnlInitState: ''
+      - chnlPolarity: ''
+      - bdmMode: 'kFTM_BdmMode_0'
+      - useGlobalTimeBase: 'false'
+    - timer_interrupts: ''
+    - enable_irq: 'false'
+    - ftm_interrupt:
+      - IRQn: 'FTM0_IRQn'
+      - enable_interrrupt: 'enabled'
+      - enable_priority: 'false'
+      - priority: '0'
+      - enable_custom_name: 'false'
+    - EnableTimerInInit: 'true'
+    - quick_selection: 'QuickSelectionDefault'
+  - ftm_edge_aligned_mode:
+    - ftm_edge_aligned_channels_config:
+      - 0:
+        - channelId: ''
+        - edge_aligned_mode: 'kFTM_EdgeAlignedPwm'
+        - edge_aligned_pwm:
+          - chnlNumber: 'kFTM_Chnl_5'
+          - level: 'kFTM_LowTrue'
+          - dutyValueStr: '0'
+          - enable_chan_irq: 'false'
+      - 1:
+        - channelId: ''
+        - edge_aligned_mode: 'kFTM_EdgeAlignedPwm'
+        - edge_aligned_pwm:
+          - chnlNumber: 'kFTM_Chnl_1'
+          - level: 'kFTM_LowTrue'
+          - dutyValueStr: '0'
+          - enable_chan_irq: 'false'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+const ftm_config_t FTM3_config = {
+  .prescale = kFTM_Prescale_Divide_1,
+  .faultMode = kFTM_Fault_Disable,
+  .faultFilterValue = 0,
+  .deadTimePrescale = kFTM_Deadtime_Prescale_1,
+  .deadTimeValue = 0,
+  .pwmSyncMode = kFTM_SoftwareTrigger,
+  .reloadPoints = 0,
+  .extTriggers = 0,
+  .chnlInitState = 0,
+  .chnlPolarity = 0,
+  .bdmMode = kFTM_BdmMode_0,
+  .useGlobalTimeBase = false
+};
+
+const ftm_chnl_pwm_config_param_t FTM3_pwmSignalParams[] = { 
+  {
+    .chnlNumber = kFTM_Chnl_5,
+    .level = kFTM_LowTrue,
+    .dutyValue = 0,
+  },
+  {
+    .chnlNumber = kFTM_Chnl_1,
+    .level = kFTM_LowTrue,
+    .dutyValue = 0,
+  }
+};
+
+static void FTM3_init(void) {
+  FTM_Init(FTM3_PERIPHERAL, &FTM3_config);
+  FTM_SetTimerPeriod(FTM3_PERIPHERAL, FTM3_TIMER_MODULO_VALUE);
+  FTM_SetupPwmMode(FTM3_PERIPHERAL, FTM3_pwmSignalParams, sizeof(FTM3_pwmSignalParams) / sizeof(ftm_chnl_pwm_config_param_t), kFTM_EdgeAlignedPwm);
+  FTM_StartTimer(FTM3_PERIPHERAL, kFTM_SystemClock);
 }
 
 /***********************************************************************************************************************
@@ -176,6 +348,8 @@ void BOARD_InitPeripherals(void)
 {
   /* Initialize components */
   ADC1_init();
+  PIT_init();
+  FTM3_init();
 }
 
 /***********************************************************************************************************************

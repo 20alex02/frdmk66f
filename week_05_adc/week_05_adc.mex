@@ -187,6 +187,11 @@
                         <data>true</data>
                      </feature>
                   </dependency>
+                  <dependency resourceType="Peripheral" resourceId="ADC1" description="Peripheral ADC1 is not initialized" problem_level="1" source="Pins:BOARD_InitPins">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
                   <dependency resourceType="SWComponent" resourceId="platform.drivers.common" description="Pins initialization requires the COMMON Driver in the project." problem_level="2" source="Pins:BOARD_InitPins">
                      <feature name="enabled" evaluation="equal" configuration="core0">
                         <data>true</data>
@@ -205,8 +210,8 @@
                         <pin_feature name="pull_enable" value="disable"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="GPIOB" signal="GPIO, 6" pin_num="F12" pin_signal="ADC1_SE12/PTB6/FB_AD23/SDRAM_D23"/>
-                  <pin peripheral="GPIOB" signal="GPIO, 7" pin_num="F11" pin_signal="ADC1_SE13/PTB7/FB_AD22/SDRAM_D22"/>
+                  <pin peripheral="ADC1" signal="SE, 12" pin_num="F12" pin_signal="ADC1_SE12/PTB6/FB_AD23/SDRAM_D23"/>
+                  <pin peripheral="ADC1" signal="SE, 13" pin_num="F11" pin_signal="ADC1_SE13/PTB7/FB_AD22/SDRAM_D22"/>
                </pins>
             </function>
             <function name="BOARD_InitBUTTONsPins">
@@ -271,6 +276,11 @@
                   <enableClock>true</enableClock>
                </options>
                <dependencies>
+                  <dependency resourceType="Peripheral" resourceId="FTM3" description="Peripheral FTM3 is not initialized" problem_level="1" source="Pins:BOARD_InitLEDsPins">
+                     <feature name="initialized" evaluation="equal">
+                        <data>true</data>
+                     </feature>
+                  </dependency>
                   <dependency resourceType="SWComponent" resourceId="platform.drivers.common" description="Pins initialization requires the COMMON Driver in the project." problem_level="2" source="Pins:BOARD_InitLEDsPins">
                      <feature name="enabled" evaluation="equal" configuration="core0">
                         <data>true</data>
@@ -298,21 +308,12 @@
                         <pin_feature name="pull_enable" value="disable"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="GPIOE" signal="GPIO, 6" pin_num="E1" pin_signal="PTE6/LLWU_P16/SPI1_PCS3/UART3_CTS_b/I2S0_MCLK/FTM3_CH1/USB0_SOF_OUT">
-                     <pin_features>
-                        <pin_feature name="direction" value="OUTPUT"/>
-                        <pin_feature name="gpio_init_state" value="true"/>
-                        <pin_feature name="slew_rate" value="fast"/>
-                        <pin_feature name="open_drain" value="disable"/>
-                        <pin_feature name="pull_select" value="down"/>
-                        <pin_feature name="pull_enable" value="disable"/>
-                     </pin_features>
-                  </pin>
-                  <pin peripheral="GPIOC" signal="GPIO, 9" pin_num="D7" pin_signal="ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/SDRAM_A14/FTM2_FLT0">
+                  <pin peripheral="FTM3" signal="CH, 1" pin_num="E1" pin_signal="PTE6/LLWU_P16/SPI1_PCS3/UART3_CTS_b/I2S0_MCLK/FTM3_CH1/USB0_SOF_OUT">
                      <pin_features>
                         <pin_feature name="identifier" value=""/>
                      </pin_features>
                   </pin>
+                  <pin peripheral="FTM3" signal="CH, 5" pin_num="D7" pin_signal="ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/SDRAM_A14/FTM2_FLT0"/>
                </pins>
             </function>
             <function name="BOARD_InitACCEL_I2CPins">
@@ -1039,6 +1040,26 @@
                   <data type="Version">2.2.0</data>
                </feature>
             </dependency>
+            <dependency resourceType="SWComponent" resourceId="platform.drivers.pit" description="PIT Driver not found in the toolchain/IDE project. Project will not compile!" problem_level="2" source="Peripherals">
+               <feature name="enabled" evaluation="equal">
+                  <data type="Boolean">true</data>
+               </feature>
+            </dependency>
+            <dependency resourceType="SWComponent" resourceId="platform.drivers.pit" description="Unsupported version of the PIT Driver in the toolchain/IDE project. Required: ${required_value}, actual: ${actual_value}. Project might not compile correctly." problem_level="1" source="Peripherals">
+               <feature name="version" evaluation="compatible">
+                  <data type="Version">2.0.3</data>
+               </feature>
+            </dependency>
+            <dependency resourceType="SWComponent" resourceId="platform.drivers.ftm" description="FTM Driver not found in the toolchain/IDE project. Project will not compile!" problem_level="2" source="Peripherals">
+               <feature name="enabled" evaluation="equal">
+                  <data type="Boolean">true</data>
+               </feature>
+            </dependency>
+            <dependency resourceType="SWComponent" resourceId="platform.drivers.ftm" description="Unsupported version of the FTM Driver in the toolchain/IDE project. Required: ${required_value}, actual: ${actual_value}. Project might not compile correctly." problem_level="1" source="Peripherals">
+               <feature name="version" evaluation="greaterOrEqual">
+                  <data type="Version">2.3.0</data>
+               </feature>
+            </dependency>
          </dependencies>
          <generated_project_files>
             <file path="board/peripherals.c" update_enabled="true"/>
@@ -1052,21 +1073,59 @@
                <description></description>
                <options/>
                <dependencies>
-                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="ADC1.adc_se.4a" description="Signal SE, channel 4a is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="ADC1.adc_se.12" description="Signal SE, channel 12 is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
                      <feature name="routed" evaluation="">
                         <data type="Boolean">true</data>
                      </feature>
                   </dependency>
-                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="ADC1.adc_se.4a" description="Signal SE, channel 4a is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="ADC1.adc_se.13" description="Signal SE, channel 13 is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
                      <feature name="routed" evaluation="">
                         <data type="Boolean">true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="ClockOutput" resourceId="Bus_clock" description="Bus clock is inactive." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="frequency" evaluation="greaterThan">
+                        <data type="Frequency" unit="Hz">0</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="ClockOutput" resourceId="Bus_clock" description="Bus clock is inactive." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="frequency" evaluation="greaterThan">
+                        <data type="Frequency" unit="Hz">0</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="ClockOutput" resourceId="Bus_clock" description="Bus clock is inactive." problem_level="2" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="frequency" evaluation="greaterThan">
+                        <data type="Frequency" unit="Hz">0</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="FTM3.tmr_ch.5" description="Signal CH5 of peripheral FTM3 is not routed" problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="routed" evaluation="equal">
+                        <data type="Boolean">true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="FTM3.tmr_ch.5" description="Direction of signal CH5 of peripheral FTM3 is set as input but it will be used as output" problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="direction" evaluation="notEqualIgnoreCase">
+                        <data type="String">INPUT</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="FTM3.tmr_ch.1" description="Signal CH1 of peripheral FTM3 is not routed" problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="routed" evaluation="equal">
+                        <data type="Boolean">true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="FTM3.tmr_ch.1" description="Direction of signal CH1 of peripheral FTM3 is set as input but it will be used as output" problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="direction" evaluation="notEqualIgnoreCase">
+                        <data type="String">INPUT</data>
                      </feature>
                   </dependency>
                </dependencies>
                <instances>
                   <instance name="NVIC" uuid="675df5be-f603-4c91-8e4a-50f94ec6bfdd" type="nvic" type_id="nvic_57b5eef3774cc60acaede6f5b8bddc67" mode="general" peripheral="NVIC" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
                      <config_set name="nvic">
-                        <array name="interrupt_table"/>
+                        <array name="interrupt_table">
+                           <struct name="0"/>
+                           <struct name="1"/>
+                        </array>
                         <array name="interrupts"/>
                      </config_set>
                   </instance>
@@ -1092,9 +1151,9 @@
                         <setting name="offset" value="0"/>
                         <setting name="trigger" value="false"/>
                         <setting name="enable_dma" value="false"/>
-                        <setting name="enable_irq" value="false"/>
+                        <setting name="enable_irq" value="true"/>
                         <struct name="adc_interrupt">
-                           <setting name="IRQn" value="ADC0_IRQn"/>
+                           <setting name="IRQn" value="ADC1_IRQn"/>
                            <setting name="enable_interrrupt" value="enabled"/>
                            <setting name="enable_priority" value="false"/>
                            <setting name="priority" value="0"/>
@@ -1104,18 +1163,137 @@
                            <struct name="0">
                               <setting name="channelName" value=""/>
                               <setting name="enableDifferentialConversion" value="false"/>
-                              <setting name="channelNumber" value="SE.4a"/>
-                              <setting name="enableInterruptOnConversionCompleted" value="false"/>
+                              <setting name="channelNumber" value="SE.12"/>
+                              <setting name="enableInterruptOnConversionCompleted" value="true"/>
                               <setting name="channelGroup" value="0"/>
                               <setting name="initializeChannel" value="false"/>
                            </struct>
                            <struct name="1">
                               <setting name="channelName" value=""/>
                               <setting name="enableDifferentialConversion" value="false"/>
-                              <setting name="channelNumber" value="SE.4a"/>
-                              <setting name="enableInterruptOnConversionCompleted" value="false"/>
+                              <setting name="channelNumber" value="SE.13"/>
+                              <setting name="enableInterruptOnConversionCompleted" value="true"/>
                               <setting name="channelGroup" value="1"/>
                               <setting name="initializeChannel" value="false"/>
+                           </struct>
+                        </array>
+                     </config_set>
+                  </instance>
+                  <instance name="PIT" uuid="565654f8-bf13-4d6f-8e6d-4727b40eec98" type="pit" type_id="pit_ab54f91356454adb874dafbb69e655fd" mode="LPTMR_GENERAL" peripheral="PIT" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
+                     <config_set name="fsl_pit" quick_selection="QS_PIT_1">
+                        <setting name="enableRunInDebug" value="false"/>
+                        <struct name="timingConfig">
+                           <setting name="clockSource" value="BusInterfaceClock"/>
+                           <setting name="clockSourceFreq" value="GetFreq"/>
+                        </struct>
+                        <array name="channels">
+                           <struct name="0">
+                              <setting name="channel_id" value="CHANNEL_0"/>
+                              <setting name="channelNumber" value="0"/>
+                              <setting name="enableChain" value="false"/>
+                              <setting name="timerPeriod" value="1s"/>
+                              <setting name="startTimer" value="true"/>
+                              <setting name="enableInterrupt" value="true"/>
+                              <struct name="interrupt">
+                                 <setting name="IRQn" value="PIT0_IRQn"/>
+                                 <setting name="enable_interrrupt" value="enabled"/>
+                                 <setting name="enable_priority" value="false"/>
+                                 <setting name="priority" value="0"/>
+                                 <setting name="enable_custom_name" value="false"/>
+                              </struct>
+                           </struct>
+                        </array>
+                     </config_set>
+                  </instance>
+                  <instance name="FTM3" uuid="125cb226-e1c0-464a-8698-7ed776ba6b34" type="ftm" type_id="ftm_a206ca22312775f3c8a462078188c129" mode="EdgeAligned" peripheral="FTM3" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
+                     <config_set name="ftm_main_config" quick_selection="QuickSelectionDefault">
+                        <struct name="ftm_config">
+                           <setting name="clockSource" value="kFTM_SystemClock"/>
+                           <setting name="clockSourceFreq" value="GetFreq"/>
+                           <setting name="timerPrescaler" value="1"/>
+                           <setting name="timerOutputFrequency" value="10 kHz"/>
+                           <setting name="systemClockSource" value="BusInterfaceClock"/>
+                           <setting name="systemClockSourceFreq" value="mirrored_value"/>
+                           <setting name="faultMode" value="kFTM_Fault_Disable"/>
+                           <setting name="inputFilterPeriod" value="1"/>
+                           <array name="faultInputs">
+                              <struct name="0">
+                                 <setting name="enableFaultInput" value="false"/>
+                                 <setting name="faultLevelVal" value="low"/>
+                                 <setting name="useFaultFilter" value="false"/>
+                              </struct>
+                              <struct name="1">
+                                 <setting name="enableFaultInput" value="false"/>
+                                 <setting name="faultLevelVal" value="low"/>
+                                 <setting name="useFaultFilter" value="false"/>
+                              </struct>
+                              <struct name="2">
+                                 <setting name="enableFaultInput" value="false"/>
+                                 <setting name="faultLevelVal" value="low"/>
+                                 <setting name="useFaultFilter" value="false"/>
+                              </struct>
+                              <struct name="3">
+                                 <setting name="enableFaultInput" value="false"/>
+                                 <setting name="faultLevelVal" value="low"/>
+                                 <setting name="useFaultFilter" value="false"/>
+                              </struct>
+                           </array>
+                           <setting name="deadTimePrescale" value="kFTM_Deadtime_Prescale_1"/>
+                           <setting name="deadTimePeriod" value="0"/>
+                           <set name="pwmSyncMode">
+                              <selected>
+                                 <id>kFTM_SoftwareTrigger</id>
+                              </selected>
+                           </set>
+                           <set name="reloadPoints">
+                              <selected/>
+                           </set>
+                           <set name="extTriggers">
+                              <selected/>
+                           </set>
+                           <set name="chnlInitState">
+                              <selected/>
+                           </set>
+                           <set name="chnlPolarity">
+                              <selected/>
+                           </set>
+                           <setting name="bdmMode" value="kFTM_BdmMode_0"/>
+                           <setting name="useGlobalTimeBase" value="false"/>
+                        </struct>
+                        <set name="timer_interrupts">
+                           <selected/>
+                        </set>
+                        <setting name="enable_irq" value="false"/>
+                        <struct name="ftm_interrupt">
+                           <setting name="IRQn" value="FTM0_IRQn"/>
+                           <setting name="enable_interrrupt" value="enabled"/>
+                           <setting name="enable_priority" value="false"/>
+                           <setting name="priority" value="0"/>
+                           <setting name="enable_custom_name" value="false"/>
+                        </struct>
+                        <setting name="EnableTimerInInit" value="true"/>
+                     </config_set>
+                     <config_set name="ftm_edge_aligned_mode">
+                        <array name="ftm_edge_aligned_channels_config">
+                           <struct name="0">
+                              <setting name="channelId" value=""/>
+                              <setting name="edge_aligned_mode" value="kFTM_EdgeAlignedPwm"/>
+                              <struct name="edge_aligned_pwm">
+                                 <setting name="chnlNumber" value="kFTM_Chnl_5"/>
+                                 <setting name="level" value="kFTM_LowTrue"/>
+                                 <setting name="dutyValueStr" value="0"/>
+                                 <setting name="enable_chan_irq" value="false"/>
+                              </struct>
+                           </struct>
+                           <struct name="1">
+                              <setting name="channelId" value=""/>
+                              <setting name="edge_aligned_mode" value="kFTM_EdgeAlignedPwm"/>
+                              <struct name="edge_aligned_pwm">
+                                 <setting name="chnlNumber" value="kFTM_Chnl_1"/>
+                                 <setting name="level" value="kFTM_LowTrue"/>
+                                 <setting name="dutyValueStr" value="0"/>
+                                 <setting name="enable_chan_irq" value="false"/>
+                              </struct>
                            </struct>
                         </array>
                      </config_set>

@@ -190,8 +190,8 @@ BOARD_InitPins:
 - options: {callFromInitBoot: 'true', prefix: BOARD_, coreID: core0, enableClock: 'true'}
 - pin_list:
   - {pin_num: K6, peripheral: TPIU, signal: SWO, pin_signal: TSI0_CH3/PTA2/UART0_TX/FTM0_CH7/I2C3_SCL/LPUART0_TX/JTAG_TDO/TRACE_SWO/EZP_DO, pull_select: down, pull_enable: disable}
-  - {pin_num: F12, peripheral: GPIOB, signal: 'GPIO, 6', pin_signal: ADC1_SE12/PTB6/FB_AD23/SDRAM_D23}
-  - {pin_num: F11, peripheral: GPIOB, signal: 'GPIO, 7', pin_signal: ADC1_SE13/PTB7/FB_AD22/SDRAM_D22}
+  - {pin_num: F12, peripheral: ADC1, signal: 'SE, 12', pin_signal: ADC1_SE12/PTB6/FB_AD23/SDRAM_D23}
+  - {pin_num: F11, peripheral: ADC1, signal: 'SE, 13', pin_signal: ADC1_SE13/PTB7/FB_AD22/SDRAM_D22}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -223,11 +223,11 @@ void BOARD_InitPins(void)
                      /* Pull Enable: Internal pullup or pulldown resistor is not enabled on the corresponding pin. */
                      | PORT_PCR_PE(kPORT_PullDisable));
 
-    /* PORTB6 (pin F12) is configured as PTB6 */
-    PORT_SetPinMux(BOARD_ADC1_SE12_PORT, BOARD_ADC1_SE12_PIN, kPORT_MuxAsGpio);
+    /* PORTB6 (pin F12) is configured as ADC1_SE12 */
+    PORT_SetPinMux(BOARD_ADC1_SE12_PORT, BOARD_ADC1_SE12_PIN, kPORT_PinDisabledOrAnalog);
 
-    /* PORTB7 (pin F11) is configured as PTB7 */
-    PORT_SetPinMux(BOARD_ADC1_SE13_PORT, BOARD_ADC1_SE13_PIN, kPORT_MuxAsGpio);
+    /* PORTB7 (pin F11) is configured as ADC1_SE13 */
+    PORT_SetPinMux(BOARD_ADC1_SE13_PORT, BOARD_ADC1_SE13_PIN, kPORT_PinDisabledOrAnalog);
 }
 
 /* clang-format off */
@@ -308,9 +308,8 @@ BOARD_InitLEDsPins:
 - pin_list:
   - {pin_num: L9, peripheral: GPIOA, signal: 'GPIO, 11', pin_signal: PTA11/LLWU_P23/FTM2_CH1/MII0_RXCLK/I2C2_SDA/FTM2_QD_PHB/TPM2_CH1, direction: OUTPUT, gpio_init_state: 'true',
     slew_rate: fast, open_drain: disable, pull_select: down, pull_enable: disable}
-  - {pin_num: E1, peripheral: GPIOE, signal: 'GPIO, 6', pin_signal: PTE6/LLWU_P16/SPI1_PCS3/UART3_CTS_b/I2S0_MCLK/FTM3_CH1/USB0_SOF_OUT, direction: OUTPUT, gpio_init_state: 'true',
-    slew_rate: fast, open_drain: disable, pull_select: down, pull_enable: disable}
-  - {pin_num: D7, peripheral: GPIOC, signal: 'GPIO, 9', pin_signal: ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/SDRAM_A14/FTM2_FLT0, identifier: ''}
+  - {pin_num: E1, peripheral: FTM3, signal: 'CH, 1', pin_signal: PTE6/LLWU_P16/SPI1_PCS3/UART3_CTS_b/I2S0_MCLK/FTM3_CH1/USB0_SOF_OUT, identifier: ''}
+  - {pin_num: D7, peripheral: FTM3, signal: 'CH, 5', pin_signal: ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/SDRAM_A14/FTM2_FLT0}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -337,13 +336,6 @@ void BOARD_InitLEDsPins(void)
     /* Initialize GPIO functionality on pin PTA11 (pin L9)  */
     GPIO_PinInit(BOARD_LED_BLUE_GPIO, BOARD_LED_BLUE_PIN, &LED_BLUE_config);
 
-    gpio_pin_config_t LED_GREEN_config = {
-        .pinDirection = kGPIO_DigitalOutput,
-        .outputLogic = 1U
-    };
-    /* Initialize GPIO functionality on pin PTE6 (pin E1)  */
-    GPIO_PinInit(BOARD_LED_GREEN_GPIO, BOARD_LED_GREEN_PIN, &LED_GREEN_config);
-
     const port_pin_config_t LED_BLUE = {/* Internal pull-up/down resistor is disabled */
                                         kPORT_PullDisable,
                                         /* Fast slew rate is configured */
@@ -361,25 +353,11 @@ void BOARD_InitLEDsPins(void)
     /* PORTA11 (pin L9) is configured as PTA11 */
     PORT_SetPinConfig(BOARD_LED_BLUE_PORT, BOARD_LED_BLUE_PIN, &LED_BLUE);
 
-    /* PORTC9 (pin D7) is configured as PTC9 */
-    PORT_SetPinMux(PORTC, 9U, kPORT_MuxAsGpio);
+    /* PORTC9 (pin D7) is configured as FTM3_CH5 */
+    PORT_SetPinMux(BOARD_LED_RED_PORT, BOARD_LED_RED_PIN, kPORT_MuxAlt3);
 
-    const port_pin_config_t LED_GREEN = {/* Internal pull-up/down resistor is disabled */
-                                         kPORT_PullDisable,
-                                         /* Fast slew rate is configured */
-                                         kPORT_FastSlewRate,
-                                         /* Passive filter is disabled */
-                                         kPORT_PassiveFilterDisable,
-                                         /* Open drain is disabled */
-                                         kPORT_OpenDrainDisable,
-                                         /* Low drive strength is configured */
-                                         kPORT_LowDriveStrength,
-                                         /* Pin is configured as PTE6 */
-                                         kPORT_MuxAsGpio,
-                                         /* Pin Control Register fields [15:0] are not locked */
-                                         kPORT_UnlockRegister};
-    /* PORTE6 (pin E1) is configured as PTE6 */
-    PORT_SetPinConfig(BOARD_LED_GREEN_PORT, BOARD_LED_GREEN_PIN, &LED_GREEN);
+    /* PORTE6 (pin E1) is configured as FTM3_CH1 */
+    PORT_SetPinMux(PORTE, 6U, kPORT_MuxAlt6);
 }
 
 /* clang-format off */
