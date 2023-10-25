@@ -210,7 +210,7 @@
                         <pin_feature name="pull_enable" value="disable"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="ADC1" signal="SE, 16" pin_num="K3" pin_signal="ADC1_SE16/CMP2_IN2/ADC0_SE22"/>
+                  <pin peripheral="ADC1" signal="SE, 12" pin_num="F12" pin_signal="ADC1_SE12/PTB6/FB_AD23/SDRAM_D23"/>
                   <pin peripheral="ADC1" signal="SE, 13" pin_num="F11" pin_signal="ADC1_SE13/PTB7/FB_AD22/SDRAM_D22"/>
                </pins>
             </function>
@@ -1030,16 +1030,6 @@
       </dcdx>
       <periphs name="Peripherals" version="11.0" enabled="true" update_project_code="true">
          <dependencies>
-            <dependency resourceType="SWComponent" resourceId="platform.drivers.adc16" description="ADC16 Driver not found in the toolchain/IDE project. Project will not compile!" problem_level="2" source="Peripherals">
-               <feature name="enabled" evaluation="equal">
-                  <data type="Boolean">true</data>
-               </feature>
-            </dependency>
-            <dependency resourceType="SWComponent" resourceId="platform.drivers.adc16" description="Unsupported version of the ADC16 Driver in the toolchain/IDE project. Required: ${required_value}, actual: ${actual_value}. Project might not compile correctly." problem_level="1" source="Peripherals">
-               <feature name="version" evaluation="equivalent">
-                  <data type="Version">2.2.0</data>
-               </feature>
-            </dependency>
             <dependency resourceType="SWComponent" resourceId="platform.drivers.ftm" description="FTM Driver not found in the toolchain/IDE project. Project will not compile!" problem_level="2" source="Peripherals">
                <feature name="enabled" evaluation="equal">
                   <data type="Boolean">true</data>
@@ -1048,6 +1038,16 @@
             <dependency resourceType="SWComponent" resourceId="platform.drivers.ftm" description="Unsupported version of the FTM Driver in the toolchain/IDE project. Required: ${required_value}, actual: ${actual_value}. Project might not compile correctly." problem_level="1" source="Peripherals">
                <feature name="version" evaluation="greaterOrEqual">
                   <data type="Version">2.3.0</data>
+               </feature>
+            </dependency>
+            <dependency resourceType="SWComponent" resourceId="platform.drivers.adc16" description="ADC16 Driver not found in the toolchain/IDE project. Project will not compile!" problem_level="2" source="Peripherals">
+               <feature name="enabled" evaluation="equal">
+                  <data type="Boolean">true</data>
+               </feature>
+            </dependency>
+            <dependency resourceType="SWComponent" resourceId="platform.drivers.adc16" description="Unsupported version of the ADC16 Driver in the toolchain/IDE project. Required: ${required_value}, actual: ${actual_value}. Project might not compile correctly." problem_level="1" source="Peripherals">
+               <feature name="version" evaluation="equivalent">
+                  <data type="Version">2.2.0</data>
                </feature>
             </dependency>
          </dependencies>
@@ -1063,16 +1063,6 @@
                <description></description>
                <options/>
                <dependencies>
-                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="ADC1.adc_se.13" description="Signal SE, channel 13 is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
-                     <feature name="routed" evaluation="">
-                        <data type="Boolean">true</data>
-                     </feature>
-                  </dependency>
-                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="ADC1.adc_se.16" description="Signal SE, channel 16 is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
-                     <feature name="routed" evaluation="">
-                        <data type="Boolean">true</data>
-                     </feature>
-                  </dependency>
                   <dependency resourceType="ClockOutput" resourceId="Bus_clock" description="Bus clock is inactive." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
                      <feature name="frequency" evaluation="greaterThan">
                         <data type="Frequency" unit="Hz">0</data>
@@ -1103,6 +1093,16 @@
                         <data type="String">INPUT</data>
                      </feature>
                   </dependency>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="ADC1.adc_se.12" description="Signal SE, channel 12 is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="routed" evaluation="">
+                        <data type="Boolean">true</data>
+                     </feature>
+                  </dependency>
+                  <dependency resourceType="PeripheralUnifiedSignal" resourceId="ADC1.adc_se.13" description="Signal SE, channel 13 is not routed." problem_level="1" source="Peripherals:BOARD_InitPeripherals">
+                     <feature name="routed" evaluation="">
+                        <data type="Boolean">true</data>
+                     </feature>
+                  </dependency>
                </dependencies>
                <instances>
                   <instance name="NVIC" uuid="675df5be-f603-4c91-8e4a-50f94ec6bfdd" type="nvic" type_id="nvic_57b5eef3774cc60acaede6f5b8bddc67" mode="general" peripheral="NVIC" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
@@ -1111,56 +1111,6 @@
                            <struct name="0"/>
                         </array>
                         <array name="interrupts"/>
-                     </config_set>
-                  </instance>
-                  <instance name="ADC1" uuid="652db612-3ae0-4f5d-9c66-a05c7c8e224a" type="adc16" type_id="adc16_897558f9b7366ed198de18c33097d7d2" mode="ADC" peripheral="ADC1" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
-                     <config_set name="fsl_adc16">
-                        <struct name="adc16_config">
-                           <setting name="referenceVoltageSource" value="kADC16_ReferenceVoltageSourceVref"/>
-                           <setting name="clockSource" value="kADC16_ClockSourceAsynchronousClock"/>
-                           <setting name="enableAsynchronousClock" value="true"/>
-                           <setting name="clockDivider" value="kADC16_ClockDivider8"/>
-                           <setting name="resolution" value="kADC16_ResolutionSE12Bit"/>
-                           <setting name="longSampleMode" value="kADC16_LongSampleDisabled"/>
-                           <setting name="hardwareAverageMode" value="kADC16_HardwareAverageDisabled"/>
-                           <setting name="enableHighSpeed" value="false"/>
-                           <setting name="enableLowPower" value="false"/>
-                           <setting name="enableContinuousConversion" value="false"/>
-                        </struct>
-                        <setting name="adc16_channel_mux_mode" value="kADC16_ChannelMuxA"/>
-                        <struct name="adc16_hardware_compare_config">
-                           <setting name="hardwareCompareModeEnable" value="false"/>
-                        </struct>
-                        <setting name="doAutoCalibration" value="false"/>
-                        <setting name="offset" value="0"/>
-                        <setting name="trigger" value="false"/>
-                        <setting name="enable_dma" value="false"/>
-                        <setting name="enable_irq" value="true"/>
-                        <struct name="adc_interrupt">
-                           <setting name="IRQn" value="ADC1_IRQn"/>
-                           <setting name="enable_interrrupt" value="enabled"/>
-                           <setting name="enable_priority" value="false"/>
-                           <setting name="priority" value="0"/>
-                           <setting name="enable_custom_name" value="false"/>
-                        </struct>
-                        <array name="adc16_channels_config">
-                           <struct name="0">
-                              <setting name="channelName" value=""/>
-                              <setting name="enableDifferentialConversion" value="false"/>
-                              <setting name="channelNumber" value="SE.13"/>
-                              <setting name="enableInterruptOnConversionCompleted" value="true"/>
-                              <setting name="channelGroup" value="0"/>
-                              <setting name="initializeChannel" value="false"/>
-                           </struct>
-                           <struct name="1">
-                              <setting name="channelName" value=""/>
-                              <setting name="enableDifferentialConversion" value="false"/>
-                              <setting name="channelNumber" value="SE.16"/>
-                              <setting name="enableInterruptOnConversionCompleted" value="true"/>
-                              <setting name="channelGroup" value="1"/>
-                              <setting name="initializeChannel" value="false"/>
-                           </struct>
-                        </array>
                      </config_set>
                   </instance>
                   <instance name="FTM3" uuid="125cb226-e1c0-464a-8698-7ed776ba6b34" type="ftm" type_id="ftm_a206ca22312775f3c8a462078188c129" mode="EdgeAligned" peripheral="FTM3" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
@@ -1252,6 +1202,56 @@
                                  <setting name="dutyValueStr" value="0"/>
                                  <setting name="enable_chan_irq" value="false"/>
                               </struct>
+                           </struct>
+                        </array>
+                     </config_set>
+                  </instance>
+                  <instance name="ADC1" uuid="127e2f98-1e2b-4ddc-8bea-8c54876c3b1b" type="adc16" type_id="adc16_897558f9b7366ed198de18c33097d7d2" mode="ADC" peripheral="ADC1" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
+                     <config_set name="fsl_adc16">
+                        <struct name="adc16_config">
+                           <setting name="referenceVoltageSource" value="kADC16_ReferenceVoltageSourceVref"/>
+                           <setting name="clockSource" value="kADC16_ClockSourceAsynchronousClock"/>
+                           <setting name="enableAsynchronousClock" value="true"/>
+                           <setting name="clockDivider" value="kADC16_ClockDivider8"/>
+                           <setting name="resolution" value="kADC16_ResolutionSE12Bit"/>
+                           <setting name="longSampleMode" value="kADC16_LongSampleDisabled"/>
+                           <setting name="hardwareAverageMode" value="kADC16_HardwareAverageDisabled"/>
+                           <setting name="enableHighSpeed" value="false"/>
+                           <setting name="enableLowPower" value="false"/>
+                           <setting name="enableContinuousConversion" value="false"/>
+                        </struct>
+                        <setting name="adc16_channel_mux_mode" value="kADC16_ChannelMuxA"/>
+                        <struct name="adc16_hardware_compare_config">
+                           <setting name="hardwareCompareModeEnable" value="false"/>
+                        </struct>
+                        <setting name="doAutoCalibration" value="false"/>
+                        <setting name="offset" value="0"/>
+                        <setting name="trigger" value="false"/>
+                        <setting name="enable_dma" value="false"/>
+                        <setting name="enable_irq" value="true"/>
+                        <struct name="adc_interrupt">
+                           <setting name="IRQn" value="ADC1_IRQn"/>
+                           <setting name="enable_interrrupt" value="enabled"/>
+                           <setting name="enable_priority" value="false"/>
+                           <setting name="priority" value="0"/>
+                           <setting name="enable_custom_name" value="false"/>
+                        </struct>
+                        <array name="adc16_channels_config">
+                           <struct name="0">
+                              <setting name="channelName" value=""/>
+                              <setting name="enableDifferentialConversion" value="false"/>
+                              <setting name="channelNumber" value="SE.12"/>
+                              <setting name="enableInterruptOnConversionCompleted" value="true"/>
+                              <setting name="channelGroup" value="0"/>
+                              <setting name="initializeChannel" value="false"/>
+                           </struct>
+                           <struct name="1">
+                              <setting name="channelName" value=""/>
+                              <setting name="enableDifferentialConversion" value="false"/>
+                              <setting name="channelNumber" value="SE.13"/>
+                              <setting name="enableInterruptOnConversionCompleted" value="true"/>
+                              <setting name="channelGroup" value="0"/>
+                              <setting name="initializeChannel" value="false"/>
                            </struct>
                         </array>
                      </config_set>
