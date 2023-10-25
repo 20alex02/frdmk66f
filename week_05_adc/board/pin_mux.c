@@ -308,8 +308,8 @@ BOARD_InitLEDsPins:
 - pin_list:
   - {pin_num: L9, peripheral: GPIOA, signal: 'GPIO, 11', pin_signal: PTA11/LLWU_P23/FTM2_CH1/MII0_RXCLK/I2C2_SDA/FTM2_QD_PHB/TPM2_CH1, direction: OUTPUT, gpio_init_state: 'true',
     slew_rate: fast, open_drain: disable, pull_select: down, pull_enable: disable}
-  - {pin_num: E1, peripheral: FTM3, signal: 'CH, 1', pin_signal: PTE6/LLWU_P16/SPI1_PCS3/UART3_CTS_b/I2S0_MCLK/FTM3_CH1/USB0_SOF_OUT, identifier: ''}
-  - {pin_num: D7, peripheral: FTM3, signal: 'CH, 5', pin_signal: ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/SDRAM_A14/FTM2_FLT0}
+  - {pin_num: E1, peripheral: FTM3, signal: 'CH, 1', pin_signal: PTE6/LLWU_P16/SPI1_PCS3/UART3_CTS_b/I2S0_MCLK/FTM3_CH1/USB0_SOF_OUT, direction: OUTPUT}
+  - {pin_num: D7, peripheral: FTM3, signal: 'CH, 5', pin_signal: ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/SDRAM_A14/FTM2_FLT0, direction: OUTPUT}
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS ***********
  */
 /* clang-format on */
@@ -357,7 +357,7 @@ void BOARD_InitLEDsPins(void)
     PORT_SetPinMux(BOARD_LED_RED_PORT, BOARD_LED_RED_PIN, kPORT_MuxAlt3);
 
     /* PORTE6 (pin E1) is configured as FTM3_CH1 */
-    PORT_SetPinMux(PORTE, 6U, kPORT_MuxAlt6);
+    PORT_SetPinMux(BOARD_LED_GREEN_PORT, BOARD_LED_GREEN_PIN, kPORT_MuxAlt6);
 }
 
 /* clang-format off */

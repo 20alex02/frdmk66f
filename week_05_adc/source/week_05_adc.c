@@ -7,13 +7,11 @@
 #include "fsl_debug_console.h"
 
 volatile uint32_t adc_value = 0;
-volatile bool ready = true;
 volatile bool triggered = false;
 
 /* ADC1_IRQn interrupt handler */
 void ADC1_IRQHANDLER(void) {
 	if (ADC16_GetChannelStatusFlags(ADC1_PERIPHERAL, 0U) & kADC16_ChannelConversionDoneFlag) {
-		ready = true;
 		triggered = true;
 		adc_value = ADC16_GetChannelConversionValue(ADC1_PERIPHERAL, 0U);
 	}
@@ -25,6 +23,25 @@ void ADC1_IRQHANDLER(void) {
 	#endif
 }
 
+//volatile bool timer = false;
+///* PIT0_IRQn interrupt handler */
+//void PIT_CHANNEL_0_IRQHANDLER(void) {
+//  uint32_t intStatus;
+//  /* Reading all interrupt flags of status register */
+//  intStatus = PIT_GetStatusFlags(PIT_PERIPHERAL, PIT_CHANNEL_0);
+//  PIT_ClearStatusFlags(PIT_PERIPHERAL, PIT_CHANNEL_0, intStatus);
+//
+//  /* Place your code here */
+//  timer = true;
+//
+//  /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F
+//     Store immediate overlapping exception return operation might vector to incorrect interrupt. */
+//  #if defined __CORTEX_M && (__CORTEX_M == 4U)
+//    __DSB();
+//  #endif
+//}
+
+
 int main(void) {
     /* Init board hardware. */
     BOARD_InitBootPins();
@@ -35,28 +52,24 @@ int main(void) {
     BOARD_InitDebugConsole();
 #endif
 
-    bool channel = false;
+    bool red = false;
+    bool ready = true;
     while(1) {
 		if (ready) {
 			ready = false;
-			channel = !channel;
-			if (channel) {
-				ADC16_SetChannelConfig(ADC1, 0U, &ADC1_channelsConfig[0]);
-			} else {
-				ADC16_SetChannelConfig(ADC1, 0U, &ADC1_channelsConfig[1]);
-			}
+			red = !red;
+			ADC16_SetChannelConfig(ADC1, 0U, &ADC1_channelsConfig[red ? 0 : 1]);
 		}
     	if (triggered) {
     		triggered = false;
-			if (channel) {
-				PRINTF("channel 1: %d\r\n", adc_value);
-				FTM_UpdatePwmDutycycle(FTM3, kFTM_Chnl_1, kFTM_EdgeAlignedPwm, adc_value * 100.0 / 4096);
-			} else {
-				PRINTF("channel 5: %d\r\n", adc_value);
-				FTM_UpdatePwmDutycycle(FTM3, kFTM_Chnl_5, kFTM_EdgeAlignedPwm, adc_value * 100.0 / 4096);
-			}
+    		ready = true;
+    		FTM_UpdatePwmDutycycle(FTM3, red ? kFTM_Chnl_5 : kFTM_Chnl_1, kFTM_EdgeAlignedPwm, adc_value * 100 / 4096);
 			FTM_SetSoftwareTrigger(FTM3, true);
     	}
+//    	if (timer) {
+//    		timer = false;
+//    		PRINTF("%5s, value: %4d, percentage: %3d\r\n", red ? "red" : "green", adc_value, adc_value * 100 / 4096);
+//    	}
     }
     return 0 ;
 }

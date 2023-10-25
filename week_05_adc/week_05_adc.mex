@@ -310,10 +310,14 @@
                   </pin>
                   <pin peripheral="FTM3" signal="CH, 1" pin_num="E1" pin_signal="PTE6/LLWU_P16/SPI1_PCS3/UART3_CTS_b/I2S0_MCLK/FTM3_CH1/USB0_SOF_OUT">
                      <pin_features>
-                        <pin_feature name="identifier" value=""/>
+                        <pin_feature name="direction" value="OUTPUT"/>
                      </pin_features>
                   </pin>
-                  <pin peripheral="FTM3" signal="CH, 5" pin_num="D7" pin_signal="ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/SDRAM_A14/FTM2_FLT0"/>
+                  <pin peripheral="FTM3" signal="CH, 5" pin_num="D7" pin_signal="ADC1_SE5b/CMP0_IN3/PTC9/FTM3_CH5/I2S0_RX_BCLK/FB_AD6/SDRAM_A14/FTM2_FLT0">
+                     <pin_features>
+                        <pin_feature name="direction" value="OUTPUT"/>
+                     </pin_features>
+                  </pin>
                </pins>
             </function>
             <function name="BOARD_InitACCEL_I2CPins">

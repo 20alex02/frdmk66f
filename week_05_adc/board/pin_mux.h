@@ -103,6 +103,15 @@ void BOARD_InitBUTTONsPins(void);
 #define BOARD_LED_BLUE_PIN_MASK (1U << 11U)      /*!<@brief PORT pin mask */
                                                  /* @} */
 
+/*! @name PORTE6 (coord E1), LEDRGB_GREEN
+  @{ */
+
+/* Symbols to be used with PORT driver */
+#define BOARD_LED_GREEN_PORT PORTE               /*!<@brief PORT peripheral base pointer */
+#define BOARD_LED_GREEN_PIN 6U                   /*!<@brief PORT pin number */
+#define BOARD_LED_GREEN_PIN_MASK (1U << 6U)      /*!<@brief PORT pin mask */
+                                                 /* @} */
+
 /*! @name PORTC9 (coord D7), LEDRGB_RED
   @{ */
 
