@@ -97,7 +97,7 @@ instance:
       - clockSource: 'kFTM_SystemClock'
       - clockSourceFreq: 'GetFreq'
       - timerPrescaler: '1'
-      - timerOutputFrequency: '10 kHz'
+      - timerOutputFrequency: '256 kHz'
       - systemClockSource: 'BusInterfaceClock'
       - systemClockSourceFreq: 'mirrored_value'
       - faultMode: 'kFTM_Fault_Disable'
@@ -137,7 +137,6 @@ instance:
       - priority: '0'
       - enable_custom_name: 'false'
     - EnableTimerInInit: 'true'
-    - quick_selection: 'QuickSelectionDefault'
   - ftm_edge_aligned_mode:
     - ftm_edge_aligned_channels_config:
       - 0:

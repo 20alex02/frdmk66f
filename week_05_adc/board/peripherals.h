@@ -27,7 +27,7 @@ extern "C" {
 /* Definition of the clock source frequency */
 #define FTM3_CLOCK_SOURCE CLOCK_GetFreq(kCLOCK_BusClk)
 /* Definition of the clock source frequency */
-#define FTM3_TIMER_MODULO_VALUE (((FTM3_CLOCK_SOURCE/ (1U << (FTM3_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 10000) - 1)
+#define FTM3_TIMER_MODULO_VALUE (((FTM3_CLOCK_SOURCE/ (1U << (FTM3_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 256000) - 1)
 /* Alias for ADC1 peripheral */
 #define ADC1_PERIPHERAL ADC1
 /* ADC1 interrupt vector ID (number). */

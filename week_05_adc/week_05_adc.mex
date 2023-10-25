@@ -1118,12 +1118,12 @@
                      </config_set>
                   </instance>
                   <instance name="FTM3" uuid="125cb226-e1c0-464a-8698-7ed776ba6b34" type="ftm" type_id="ftm_a206ca22312775f3c8a462078188c129" mode="EdgeAligned" peripheral="FTM3" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
-                     <config_set name="ftm_main_config" quick_selection="QuickSelectionDefault">
+                     <config_set name="ftm_main_config">
                         <struct name="ftm_config">
                            <setting name="clockSource" value="kFTM_SystemClock"/>
                            <setting name="clockSourceFreq" value="GetFreq"/>
                            <setting name="timerPrescaler" value="1"/>
-                           <setting name="timerOutputFrequency" value="10 kHz"/>
+                           <setting name="timerOutputFrequency" value="256 kHz"/>
                            <setting name="systemClockSource" value="BusInterfaceClock"/>
                            <setting name="systemClockSourceFreq" value="mirrored_value"/>
                            <setting name="faultMode" value="kFTM_Fault_Disable"/>
