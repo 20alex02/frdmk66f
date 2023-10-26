@@ -65,6 +65,8 @@ int main(void) {
     struct bmp280_uncomp_data ucomp_data;
     int32_t temp32;
     double temp;
+    uint32_t press32;
+    double press;
 
     /* Map the delay function pointer with the function responsible for implementing the delay */
     bmp.delay_ms = delay_ms;
@@ -91,7 +93,7 @@ int main(void) {
     conf.os_temp = BMP280_OS_4X;
 
     /* Pressure over sampling none (disabling pressure measurement) */
-    conf.os_pres = BMP280_OS_NONE;
+    conf.os_pres = BMP280_OS_4X;
 
     /* Setting the output data rate as 1HZ(1000ms) */
     conf.odr = BMP280_ODR_1000_MS;
@@ -112,6 +114,10 @@ int main(void) {
     	/* Getting the compensated temperature as floating point value */
     	rslt = bmp280_get_comp_temp_double(&temp, ucomp_data.uncomp_temp, &bmp);
     	printf("UT: %ld, T32: %ld, T: %f \r\n", ucomp_data.uncomp_temp, temp32, temp);
+
+        rslt = bmp280_get_comp_pres_32bit(&press32, ucomp_data.uncomp_press, &bmp);
+        rslt = bmp280_get_comp_pres_double(&press, ucomp_data.uncomp_press, &bmp);
+        printf("UP: %ld, P32: %ld, P: %f \r\n", ucomp_data.uncomp_press, press32, press);
 
     	/* Sleep time between measurements = BMP280_ODR_1000_MS */
     	bmp.delay_ms(1000);
