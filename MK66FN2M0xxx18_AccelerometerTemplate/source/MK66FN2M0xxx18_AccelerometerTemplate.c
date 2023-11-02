@@ -49,6 +49,26 @@
 #define DEFAULT_DATA_SCALE 2U
 #define BUFFER_SIZE 6
 
+volatile bool orientation_changed = false;
+/* PORTC_IRQn interrupt handler */
+void GPIOC_IRQHANDLER(void) {
+  /* Get pin flags */
+  uint32_t pin_flags = GPIO_PortGetInterruptFlags(GPIOC);
+
+  /* Place your interrupt code here */
+  orientation_changed = true;
+
+  /* Clear pin flags */
+  GPIO_PortClearInterruptFlags(GPIOC, pin_flags);
+
+  /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F
+     Store immediate overlapping exception return operation might vector to incorrect interrupt. */
+  #if defined __CORTEX_M && (__CORTEX_M == 4U)
+    __DSB();
+  #endif
+}
+
+
 status_t setupOrientationDetection();
 
 /**
@@ -110,26 +130,37 @@ int main(void) {
     	PRINTF("\r\nInitialization failed!\r\n");
     	return -1;
     }
-    uint8_t buf_size = 2;
-    uint8_t buf[buf_size];
-    uint32_t x, y, z;
+    uint8_t landscape;
+    uint8_t mask = 1 << 7;
     while(1) {
-    	//hello
-//    	BOARD_Accel_I2C_Send(SENSOR_ADDRESS, OUT_X_MSB_REG, 1, )
-    	if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, OUT_X_MSB_REG, 1, buf, buf_size) != kStatus_Success) {
-    		PRINTF("receive failed\r\n");
-    	}
-    	x = (buf[0] << 6) | (buf[1] >> 2);
-    	if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, OUT_Y_MSB_REG, 1, buf, buf_size) != kStatus_Success) {
-    		PRINTF("receive failed\r\n");
-    	}
-    	y = (buf[0] << 6) | (buf[1] >> 2);
-    	if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, OUT_Z_MSB_REG, 1, buf, buf_size) != kStatus_Success) {
-    		PRINTF("receive failed\r\n");
-    	}
-    	z = (buf[0] << 6) | (buf[1] >> 2);
+    	if (orientation_changed) {
+    		orientation_changed = false;
+    		PRINTF("orientation changed\r\n");
+    		if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, PL_STATUS_REG, 1, landscape, 1) != kStatus_Success) {
+        		PRINTF("receive failed\r\n");
+        		continue;
+        	}
+    		if (landscape & mask) {
+    			PRINTF("orientation changed\r\n");
+    		}
 
-    	PRINTF("x: %6d y:%6d z:%6d\r\n", x, y, z);
+    	}
+
+//    	BOARD_Accel_I2C_Send(SENSOR_ADDRESS, OUT_X_MSB_REG, 1, )
+//    	if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, OUT_X_MSB_REG, 1, buf, buf_size) != kStatus_Success) {
+//    		PRINTF("receive failed\r\n");
+//    	}
+//    	x = (buf[0] << 6) | (buf[1] >> 2);
+//    	if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, OUT_Y_MSB_REG, 1, buf, buf_size) != kStatus_Success) {
+//    		PRINTF("receive failed\r\n");
+//    	}
+//    	y = (buf[0] << 6) | (buf[1] >> 2);
+//    	if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, OUT_Z_MSB_REG, 1, buf, buf_size) != kStatus_Success) {
+//    		PRINTF("receive failed\r\n");
+//    	}
+//    	z = (buf[0] << 6) | (buf[1] >> 2);
+
+//    	PRINTF("x: %6d y:%6d z:%6d\r\n", x, y, z);
     	SDK_DelayAtLeastUs(1000 * 100);
     }
     return 0;
