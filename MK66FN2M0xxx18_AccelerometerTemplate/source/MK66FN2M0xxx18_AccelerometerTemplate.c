@@ -114,6 +114,7 @@ int main(void) {
     uint8_t buf[buf_size];
     uint32_t x, y, z;
     while(1) {
+    	//hello
 //    	BOARD_Accel_I2C_Send(SENSOR_ADDRESS, OUT_X_MSB_REG, 1, )
     	if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, OUT_X_MSB_REG, 1, buf, buf_size) != kStatus_Success) {
     		PRINTF("receive failed\r\n");
