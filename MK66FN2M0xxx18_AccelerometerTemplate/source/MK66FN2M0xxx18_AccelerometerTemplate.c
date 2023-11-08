@@ -69,7 +69,29 @@ void GPIOC_IRQHANDLER(void) {
 }
 
 
-status_t setupOrientationDetection();
+status_t setupOrientationDetection() {
+	uint8_t tmp;
+	status_t status = BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, PL_CFG_REG, 1, &tmp, 1);
+	if (status != kStatus_Success) {
+		return status;
+	}
+	tmp |= PL_EN_MASK;
+	status = BOARD_Accel_I2C_Send(SENSOR_ADDRESS, PL_CFG_REG, 1, tmp);
+	if (status != kStatus_Success) {
+		return status;
+	}
+
+	status = BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, CTRL_REG4, 1, &tmp, 1);
+	if (status != kStatus_Success) {
+		return status;
+	}
+	tmp |= INT_EN_LNDPRT_MASK;
+	status = BOARD_Accel_I2C_Send(SENSOR_ADDRESS, CTRL_REG4, 1, tmp);
+	if (status != kStatus_Success) {
+		return status;
+	}
+    return kStatus_Success;
+}
 
 /**
  * Configures FXOS8700CQ accelerometer.
@@ -106,16 +128,21 @@ status_t initializeAccel() {
     return result;
 }
 
-status_t setupOrientationDetection() {
-	// TODO: setup accelerometer to generate an interrupt when orientation changes
-    return kStatus_Success;
+void print_orientation(uint8_t orientation) {
+	if (orientation & LAPO1_MASK && orientation & LAPO0_MASK) {
+		PRINTF("landscape left\r\n");
+	} else if (orientation & LAPO1_MASK) {
+		PRINTF("landscape right\r\n");
+	} else if (orientation & LAPO0_MASK) {
+		PRINTF("portrait down\r\n");
+	} else {
+		PRINTF("portrait up\r\n");
+	}
 }
 
 /*
  * @brief   Application entry point.
  */
-
-// TODO for hw - PL_STATUS, PL_CFG, CTRL_REG4
 int main(void) {
   	/* Init board hardware. */
     BOARD_InitBootPins();
@@ -130,38 +157,17 @@ int main(void) {
     	PRINTF("\r\nInitialization failed!\r\n");
     	return -1;
     }
-    uint8_t landscape;
-    uint8_t mask = 1 << 7;
+    uint8_t orientation = 0;
     while(1) {
     	if (orientation_changed) {
     		orientation_changed = false;
-    		PRINTF("orientation changed\r\n");
-    		if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, PL_STATUS_REG, 1, landscape, 1) != kStatus_Success) {
+    		if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, PL_STATUS_REG, 1, &orientation, 1) != kStatus_Success) {
         		PRINTF("receive failed\r\n");
         		continue;
         	}
-    		if (landscape & mask) {
-    			PRINTF("orientation changed\r\n");
-    		}
-
+    		print_orientation(orientation);
     	}
-
-//    	BOARD_Accel_I2C_Send(SENSOR_ADDRESS, OUT_X_MSB_REG, 1, )
-//    	if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, OUT_X_MSB_REG, 1, buf, buf_size) != kStatus_Success) {
-//    		PRINTF("receive failed\r\n");
-//    	}
-//    	x = (buf[0] << 6) | (buf[1] >> 2);
-//    	if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, OUT_Y_MSB_REG, 1, buf, buf_size) != kStatus_Success) {
-//    		PRINTF("receive failed\r\n");
-//    	}
-//    	y = (buf[0] << 6) | (buf[1] >> 2);
-//    	if (BOARD_Accel_I2C_Receive(SENSOR_ADDRESS, OUT_Z_MSB_REG, 1, buf, buf_size) != kStatus_Success) {
-//    		PRINTF("receive failed\r\n");
-//    	}
-//    	z = (buf[0] << 6) | (buf[1] >> 2);
-
-//    	PRINTF("x: %6d y:%6d z:%6d\r\n", x, y, z);
-    	SDK_DelayAtLeastUs(1000 * 100);
+//    	SDK_DelayAtLeastUs(1000 * 100);
     }
     return 0;
 }
