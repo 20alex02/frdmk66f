@@ -31,13 +31,13 @@ extern "C" {
 /* Definition of the clock source frequency */
 #define FTM2_CLOCK_SOURCE CLOCK_GetFreq(kCLOCK_BusClk)
 /* Definition of the clock source frequency */
-#define FTM2_TIMER_MODULO_VALUE (((FTM2_CLOCK_SOURCE/ (1U << (FTM2_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 10000) - 1)
+#define FTM2_TIMER_MODULO_VALUE (((FTM2_CLOCK_SOURCE/ (1U << (FTM2_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 262144) - 1)
 /* Definition of peripheral ID */
 #define FTM3_PERIPHERAL FTM3
 /* Definition of the clock source frequency */
 #define FTM3_CLOCK_SOURCE CLOCK_GetFreq(kCLOCK_BusClk)
 /* Definition of the clock source frequency */
-#define FTM3_TIMER_MODULO_VALUE (((FTM3_CLOCK_SOURCE/ (1U << (FTM3_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 10000) - 1)
+#define FTM3_TIMER_MODULO_VALUE (((FTM3_CLOCK_SOURCE/ (1U << (FTM3_PERIPHERAL->SC & FTM_SC_PS_MASK))) / 262144) - 1)
 
 /***********************************************************************************************************************
  * Global variables

@@ -1157,12 +1157,12 @@
                      </config_set>
                   </instance>
                   <instance name="FTM2" uuid="9bd04277-fdd1-44c5-8090-5bdd1d84cfd2" type="ftm" type_id="ftm_a206ca22312775f3c8a462078188c129" mode="EdgeAligned" peripheral="FTM2" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
-                     <config_set name="ftm_main_config" quick_selection="QuickSelectionDefault">
+                     <config_set name="ftm_main_config">
                         <struct name="ftm_config">
                            <setting name="clockSource" value="kFTM_SystemClock"/>
                            <setting name="clockSourceFreq" value="GetFreq"/>
                            <setting name="timerPrescaler" value="1"/>
-                           <setting name="timerOutputFrequency" value="10 kHz"/>
+                           <setting name="timerOutputFrequency" value="262.144 kHz"/>
                            <setting name="systemClockSource" value="BusInterfaceClock"/>
                            <setting name="systemClockSourceFreq" value="mirrored_value"/>
                            <setting name="faultMode" value="kFTM_Fault_Disable"/>
@@ -1240,12 +1240,12 @@
                      </config_set>
                   </instance>
                   <instance name="FTM3" uuid="16ee4f51-b98f-4504-b3d3-bdb552db216a" type="ftm" type_id="ftm_a206ca22312775f3c8a462078188c129" mode="EdgeAligned" peripheral="FTM3" enabled="true" comment="" custom_name_enabled="false" editing_lock="false">
-                     <config_set name="ftm_main_config" quick_selection="QuickSelectionDefault">
+                     <config_set name="ftm_main_config">
                         <struct name="ftm_config">
                            <setting name="clockSource" value="kFTM_SystemClock"/>
                            <setting name="clockSourceFreq" value="GetFreq"/>
                            <setting name="timerPrescaler" value="1"/>
-                           <setting name="timerOutputFrequency" value="10 kHz"/>
+                           <setting name="timerOutputFrequency" value="262.144 kHz"/>
                            <setting name="systemClockSource" value="BusInterfaceClock"/>
                            <setting name="systemClockSourceFreq" value="mirrored_value"/>
                            <setting name="faultMode" value="kFTM_Fault_Disable"/>
