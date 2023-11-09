@@ -55,21 +55,15 @@ int main(void) {
     BOARD_InitDebugConsole();
 #endif
 
-//    uint8_t r, g, b;
-    uint8_t ch;
+    uint8_t rgb[3];
     while(1) {
-    	UART_ReadBlocking(UART3, &ch, 1);
-    	ch += 2;
-    	UART_WriteBlocking(UART3, &ch, 1);
-//        UART_ReadBlocking(UART3, &r, 1);
-//        UART_ReadBlocking(UART3, &g, 1);
-//        UART_ReadBlocking(UART3, &b, 1);
-//
-//    	FTM_UpdatePwmDutycycle(FTM3, kFTM_Chnl_5, kFTM_EdgeAlignedPwm, r * 100 / 255);
-//    	FTM_UpdatePwmDutycycle(FTM3, kFTM_Chnl_1, kFTM_EdgeAlignedPwm, g * 100 / 255);
-//    	FTM_UpdatePwmDutycycle(FTM2, kFTM_Chnl_1, kFTM_EdgeAlignedPwm, b * 100 / 255);
-//    	FTM_SetSoftwareTrigger(FTM3, true);
-//    	FTM_SetSoftwareTrigger(FTM2, true);
+        UART_ReadBlocking(UART3, rgb, 3);
+
+    	FTM_UpdatePwmDutycycle(FTM3, kFTM_Chnl_5, kFTM_EdgeAlignedPwm, rgb[0] * 100 / 255);
+    	FTM_UpdatePwmDutycycle(FTM3, kFTM_Chnl_1, kFTM_EdgeAlignedPwm, rgb[1] * 100 / 255);
+    	FTM_UpdatePwmDutycycle(FTM2, kFTM_Chnl_1, kFTM_EdgeAlignedPwm, rgb[2] * 100 / 255);
+    	FTM_SetSoftwareTrigger(FTM3, true);
+    	FTM_SetSoftwareTrigger(FTM2, true);
 
     }
     return 0 ;
