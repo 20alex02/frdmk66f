@@ -68,7 +68,8 @@ instance:
 - peripheral: 'NVIC'
 - config_sets:
   - nvic:
-    - interrupt_table: []
+    - interrupt_table:
+      - 0: []
     - interrupts: []
  * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
 /* clang-format on */
@@ -125,12 +126,95 @@ static void SPI0_init(void) {
 }
 
 /***********************************************************************************************************************
+ * ADC1 initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'ADC1'
+- type: 'adc16'
+- mode: 'ADC'
+- custom_name_enabled: 'false'
+- type_id: 'adc16_897558f9b7366ed198de18c33097d7d2'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'ADC1'
+- config_sets:
+  - fsl_adc16:
+    - adc16_config:
+      - referenceVoltageSource: 'kADC16_ReferenceVoltageSourceVref'
+      - clockSource: 'kADC16_ClockSourceAsynchronousClock'
+      - enableAsynchronousClock: 'true'
+      - clockDivider: 'kADC16_ClockDivider8'
+      - resolution: 'kADC16_ResolutionSE12Bit'
+      - longSampleMode: 'kADC16_LongSampleDisabled'
+      - hardwareAverageMode: 'kADC16_HardwareAverageDisabled'
+      - enableHighSpeed: 'false'
+      - enableLowPower: 'false'
+      - enableContinuousConversion: 'false'
+    - adc16_channel_mux_mode: 'kADC16_ChannelMuxA'
+    - adc16_hardware_compare_config:
+      - hardwareCompareModeEnable: 'false'
+    - doAutoCalibration: 'false'
+    - offset: '0'
+    - trigger: 'false'
+    - enable_dma: 'false'
+    - enable_irq: 'true'
+    - adc_interrupt:
+      - IRQn: 'ADC1_IRQn'
+      - enable_interrrupt: 'enabled'
+      - enable_priority: 'false'
+      - priority: '0'
+      - enable_custom_name: 'false'
+    - adc16_channels_config:
+      - 0:
+        - channelName: ''
+        - enableDifferentialConversion: 'false'
+        - channelNumber: 'SE.13'
+        - enableInterruptOnConversionCompleted: 'true'
+        - channelGroup: '0'
+        - initializeChannel: 'false'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+adc16_channel_config_t ADC1_channelsConfig[1] = {
+  {
+    .channelNumber = 13U,
+    .enableDifferentialConversion = false,
+    .enableInterruptOnConversionCompleted = true,
+  }
+};
+const adc16_config_t ADC1_config = {
+  .referenceVoltageSource = kADC16_ReferenceVoltageSourceVref,
+  .clockSource = kADC16_ClockSourceAsynchronousClock,
+  .enableAsynchronousClock = true,
+  .clockDivider = kADC16_ClockDivider8,
+  .resolution = kADC16_ResolutionSE12Bit,
+  .longSampleMode = kADC16_LongSampleDisabled,
+  .hardwareAverageMode = kADC16_HardwareAverageDisabled,
+  .enableHighSpeed = false,
+  .enableLowPower = false,
+  .enableContinuousConversion = false
+};
+const adc16_channel_mux_mode_t ADC1_muxMode = kADC16_ChannelMuxA;
+
+static void ADC1_init(void) {
+  /* Initialize ADC16 converter */
+  ADC16_Init(ADC1_PERIPHERAL, &ADC1_config);
+  /* Make sure, that software trigger is used */
+  ADC16_EnableHardwareTrigger(ADC1_PERIPHERAL, false);
+  /* Configure channel multiplexing mode */
+  ADC16_SetChannelMuxMode(ADC1_PERIPHERAL, ADC1_muxMode);
+  /* Enable interrupt ADC1_IRQn request in the NVIC. */
+  EnableIRQ(ADC1_IRQN);
+}
+
+/***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/
 void BOARD_InitPeripherals(void)
 {
   /* Initialize components */
   SPI0_init();
+  ADC1_init();
 }
 
 /***********************************************************************************************************************

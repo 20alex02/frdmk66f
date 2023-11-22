@@ -11,6 +11,7 @@
  **********************************************************************************************************************/
 #include "fsl_common.h"
 #include "fsl_dspi.h"
+#include "fsl_adc16.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -25,11 +26,22 @@ extern "C" {
 #define SPI0_PERIPHERAL SPI0
 /* Definition of the clock source */
 #define SPI0_CLOCK_SOURCE DSPI0_CLK_SRC
+/* Alias for ADC1 peripheral */
+#define ADC1_PERIPHERAL ADC1
+/* ADC1 interrupt vector ID (number). */
+#define ADC1_IRQN ADC1_IRQn
+/* ADC1 interrupt handler identifier. */
+#define ADC1_IRQHANDLER ADC1_IRQHandler
+/* Channel 0 (SE.13) conversion control group. */
+#define ADC1_CH0_CONTROL_GROUP 0
 
 /***********************************************************************************************************************
  * Global variables
  **********************************************************************************************************************/
 extern const dspi_slave_config_t SPI0_config;
+extern adc16_channel_config_t ADC1_channelsConfig[1];
+extern const adc16_config_t ADC1_config;
+extern const adc16_channel_mux_mode_t ADC1_muxMode;
 
 /***********************************************************************************************************************
  * Initialization functions

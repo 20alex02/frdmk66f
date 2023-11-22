@@ -39,41 +39,62 @@
 #include "clock_config.h"
 #include "MK66F18.h"
 #include "fsl_debug_console.h"
-/* TODO: insert other include files here. */
+
 #define TRANSFER_SIZE 64U
 #define CMD_WRITE ((uint32_t)0xccU)
 #define CMD_READ ((uint32_t)0x55U)
-
-dspi_slave_handle_t g_s_handle;
-volatile bool isTransferCompleted = true;
-uint8_t slaveRxData[TRANSFER_SIZE] = {0U};
-uint8_t slaveTxData[TRANSFER_SIZE] = {0U};
-uint8_t ADC_prepared[2];
+#define WRITE_SIZE 16
 
 typedef enum {
-	HEADER,
+	HEADER_RECEIVED,
 	READ,
-	WRITE,
+	READ_COMPLETED,
+	WRITE_COMPLETED,
 	STATE_COUNT
 } State;
 
+dspi_slave_handle_t g_s_handle;
+
+volatile bool uart_flag = false;
+uint8_t uart_data[WRITE_SIZE] = {0};
+
+uint8_t ADC_prepared[2];
+volatile uint16_t adc_value = 0;
+volatile bool triggered_adc = false;
+
+/* ADC1_IRQn interrupt handler */
+void ADC1_IRQHANDLER(void) {
+	if (ADC16_GetChannelStatusFlags(ADC1_PERIPHERAL, 0U) & kADC16_ChannelConversionDoneFlag) {
+		triggered_adc = true;
+		adc_value = ADC16_GetChannelConversionValue(ADC1_PERIPHERAL, 0U);
+	}
+
+	/* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F
+	 Store immediate overlapping exception return operation might vector to incorrect interrupt. */
+	#if defined __CORTEX_M && (__CORTEX_M == 4U)
+	__DSB();
+	#endif
+}
+
+
 void DSPI_SlaveUserCallback(SPI_Type *base, dspi_slave_handle_t *handle, status_t status, void *userData)
 {
-	static State state = HEADER;
+	static State state = HEADER_RECEIVED;
 	static uint8_t counter = 0;
 	dspi_transfer_t *slaveXfer = (dspi_transfer_t *) userData;
-
+	PRINTF("State: %d\r\n", state);
     if (status == kStatus_Success) {
     	switch (state) {
-		case HEADER:
+		case HEADER_RECEIVED:
 			switch (slaveXfer->rxData[0]) {
 			case CMD_READ:
-//				slaveXfer->txData = adc value
-				state = HEADER;
+				slaveXfer->txData[0] = ADC_prepared[0];
+				slaveXfer->dataSize = 1;
+				state = READ;
 				break;
 			case CMD_WRITE:
-				slaveXfer->dataSize = 16;
-				state = HEADER;
+				slaveXfer->dataSize = WRITE_SIZE;
+				state = WRITE_COMPLETED;
 				break;
 			default:
 				slaveXfer->txData[0] = counter;
@@ -81,19 +102,27 @@ void DSPI_SlaveUserCallback(SPI_Type *base, dspi_slave_handle_t *handle, status_
 			}
 			break;
 		case READ:
+			slaveXfer->txData[1] = ADC_prepared[1];
+			slaveXfer->dataSize = 1;
+			state = READ_COMPLETED;
 			break;
-		case WRITE:
+		case WRITE_COMPLETED:
+			uart_flag = true;
+			memcpy(uart_data, slaveXfer->rxData, WRITE_SIZE);
+		// NOTE: no break statement. incrementing counter and setting slaveXfer in both cases
+		case READ_COMPLETED:
+			++counter;
+			slaveXfer->txData[0] = counter;
+			slaveXfer->dataSize = 1;
+			state = HEADER_RECEIVED;
 			break;
     	default:
     		PRINTF("Invalid state.\r\n");
     	}
     	DSPI_SlaveTransferNonBlocking(base, handle, slaveXfer);
     } else {
-    	// respond to error
         PRINTF("Error occurred in this transfer. \r\n\r\n");
     }
-
-    isTransferCompleted = true;
 }
 /*
  * @brief   Application entry point.
@@ -108,26 +137,28 @@ int main(void) {
     /* Init FSL debug console. */
     BOARD_InitDebugConsole();
 #endif
-
-    PRINTF("Hello World\n");
+    PRINTF("Hello World\r\n");
     dspi_transfer_t slaveXfer;
+    slaveXfer.txData[0] = 0;
+    slaveXfer.dataSize = 1;
+    slaveXfer.configFlags = kDSPI_SlaveCtar0;
     DSPI_SlaveTransferCreateHandle(SPI0_PERIPHERAL, &g_s_handle, DSPI_SlaveUserCallback, &slaveXfer);
-    slaveTxData[0] = 'A';
-    slaveTxData[1] = 'C';
-    slaveTxData[2] = 'B';
 
 	/* Slave start receive */
     DSPI_SlaveTransferNonBlocking(SPI0_PERIPHERAL, &g_s_handle, &slaveXfer);
     while(1) {
-//    	isTransferCompleted   = false;
-//    	slaveXfer.txData      = slaveTxData;
-//    	slaveXfer.rxData      = slaveRxData;
-//    	slaveXfer.dataSize    = 1;
-//    	slaveXfer.configFlags = kDSPI_SlaveCtar0;
-//
-//    	DSPI_SlaveTransferNonBlocking(SPI0_PERIPHERAL, &g_s_handle, &slaveXfer);
-//    	while(!isTransferCompleted){}
-//    	PRINTF("%x",slaveRxData[0]);
+    	if (uart_flag) {
+    		uart_flag = false;
+    		PRINTF("writing to uart: %d\r\n", uart_data);
+    		UART_WriteBlocking(UART3, uart_data, WRITE_SIZE);
+    	}
+		if (triggered_adc) {
+			triggered_adc = false;
+			ADC_prepared[0] = adc_value >> 8;
+			ADC_prepared[1] = adc_value;
+			PRINTF("adc read: %d\r\n", adc_value);
+			ADC16_SetChannelConfig(ADC1, 0U, &ADC1_channelsConfig[0]);
+		}
     }
     return 0 ;
 }
