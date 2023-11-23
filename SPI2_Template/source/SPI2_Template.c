@@ -54,7 +54,8 @@ typedef enum {
 } State;
 
 dspi_slave_handle_t g_s_handle;
-
+uint8_t slaveRxData[TRANSFER_SIZE] = {0U};
+uint8_t slaveTxData[TRANSFER_SIZE] = {0U};
 volatile bool uart_flag = false;
 uint8_t uart_data[WRITE_SIZE] = {0};
 
@@ -67,6 +68,8 @@ void ADC1_IRQHANDLER(void) {
 	if (ADC16_GetChannelStatusFlags(ADC1_PERIPHERAL, 0U) & kADC16_ChannelConversionDoneFlag) {
 		triggered_adc = true;
 		adc_value = ADC16_GetChannelConversionValue(ADC1_PERIPHERAL, 0U);
+		ADC_prepared[0] = adc_value >> 8;
+		ADC_prepared[1] = adc_value;
 	}
 
 	/* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F
@@ -84,36 +87,44 @@ void DSPI_SlaveUserCallback(SPI_Type *base, dspi_slave_handle_t *handle, status_
 	dspi_transfer_t *slaveXfer = (dspi_transfer_t *) userData;
 	PRINTF("State: %d\r\n", state);
     if (status == kStatus_Success) {
+    	slaveXfer->dataSize = 1;
     	switch (state) {
 		case HEADER_RECEIVED:
+			PRINTF("header received\r\n");
 			switch (slaveXfer->rxData[0]) {
 			case CMD_READ:
+				PRINTF("cmd read setup\r\n");
 				slaveXfer->txData[0] = ADC_prepared[0];
-				slaveXfer->dataSize = 1;
 				state = READ;
 				break;
 			case CMD_WRITE:
+				PRINTF("cmd write setup\r\n");
 				slaveXfer->dataSize = WRITE_SIZE;
 				state = WRITE_COMPLETED;
 				break;
 			default:
+				PRINTF("no cmd setting up counter\r\n");
 				slaveXfer->txData[0] = counter;
-				slaveXfer->dataSize = 1;
 			}
 			break;
 		case READ:
+			PRINTF("read 1 completed\r\n");
 			slaveXfer->txData[1] = ADC_prepared[1];
-			slaveXfer->dataSize = 1;
 			state = READ_COMPLETED;
 			break;
 		case WRITE_COMPLETED:
+			PRINTF("write completed\r\n");
 			uart_flag = true;
 			memcpy(uart_data, slaveXfer->rxData, WRITE_SIZE);
-		// NOTE: no break statement. incrementing counter and setting slaveXfer in both cases
-		case READ_COMPLETED:
 			++counter;
 			slaveXfer->txData[0] = counter;
-			slaveXfer->dataSize = 1;
+			state = HEADER_RECEIVED;
+			break;
+		// NOTE: no break statement. incrementing counter and setting slaveXfer in both cases
+		case READ_COMPLETED:
+			PRINTF("read 2 completed\r\n");
+			++counter;
+			slaveXfer->txData[0] = counter;
 			state = HEADER_RECEIVED;
 			break;
     	default:
@@ -139,6 +150,8 @@ int main(void) {
 #endif
     PRINTF("Hello World\r\n");
     dspi_transfer_t slaveXfer;
+    slaveXfer.txData = slaveTxData;
+    slaveXfer.rxData = slaveRxData;
     slaveXfer.txData[0] = 0;
     slaveXfer.dataSize = 1;
     slaveXfer.configFlags = kDSPI_SlaveCtar0;
@@ -154,8 +167,6 @@ int main(void) {
     	}
 		if (triggered_adc) {
 			triggered_adc = false;
-			ADC_prepared[0] = adc_value >> 8;
-			ADC_prepared[1] = adc_value;
 			PRINTF("adc read: %d\r\n", adc_value);
 			ADC16_SetChannelConfig(ADC1, 0U, &ADC1_channelsConfig[0]);
 		}
