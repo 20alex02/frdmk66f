@@ -1,0 +1,9 @@
+#define RUN_TESTS 0
+#define RUN_INTERACTIVE 1
+#define USE_DEBUG_STREAM 0
+
+#define HTTP_REQUEST_IP "192.168.150.168"
+#define HTTP_REQUEST_PORT "80"
+#define HTTP_REQUEST_HOST "emlab.fi.muni.cz"
+#define HTTP_REQUEST_PATH "/notes"
+#define PHONE_NUMBER "+420123456789"
