@@ -116,11 +116,11 @@ instance:
       - compensationTimeInt: '0'
       - setDateTime: 'true'
       - rtc_datetime:
-        - year: '2021'
+        - year: '2024'
         - month: '11'
-        - day: '15'
-        - hour: '16'
-        - minute: '43'
+        - day: '30'
+        - hour: '11'
+        - minute: '23'
         - second: '0'
       - setAlarm: 'false'
       - start: 'true'
@@ -154,11 +154,11 @@ const rtc_config_t RTC_1_config = {
   .compensationTime = 0x0U
 };
 rtc_datetime_t RTC_1_dateTimeStruct = {
-  .year = 2021U,
+  .year = 2024U,
   .month = 11U,
-  .day = 15U,
-  .hour = 16U,
-  .minute = 43U,
+  .day = 30U,
+  .hour = 11U,
+  .minute = 23U,
   .second = 0U
 };
 

@@ -85,9 +85,9 @@ int main(void)
   		set_two_digit(date_str, DAY_POS, rdt.day);
   		set_two_digit(date_str, MONTH_POS, rdt.month);
   		set_four_digit(date_str, YEAR_POS, rdt.year);
-  		set_two_digit(date_str, HOUR_POS, rdt.hour);
-  		set_two_digit(date_str, MINUTE_POS, rdt.minute);
-  		set_two_digit(date_str, SECOND_POS, rdt.second);
+  		set_two_digit(time_str, HOUR_POS, rdt.hour);
+  		set_two_digit(time_str, MINUTE_POS, rdt.minute);
+  		set_two_digit(time_str, SECOND_POS, rdt.second);
   		// display date and time
   		LCD_SetPosition(0, 0);
   		LCD_Print(date_str);

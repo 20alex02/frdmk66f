@@ -196,29 +196,41 @@ void LCD_SendData(uint8_t data, MessageType_t messageType)
 	// wait until minimum delay after the last command/data transfer
 	while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0);
 	// TODO: Set RS pin to 0 or 1
-	GPIO_PinWrite(base, pin, output)
+	GPIO_PinWrite(GPIOA, LCD_RS_PIN, messageType == LCD_SEND_COMMAND ? RESET_OUTPUT : SET_OUTPUT);
 
 	// TODO: Reset the RW pin
+	GPIO_PinWrite(GPIOA, LCD_RW_PIN, RESET_OUTPUT);
 
 	// TODO: prepare DATA to send - set up GPIO pins according to data being send (one GPIO = one bit from "data")
+	GPIO_PinWrite(GPIOA, LCD_DB7_PIN, data & (1 << 7));
+	GPIO_PinWrite(GPIOA, LCD_DB6_PIN, data & (1 << 6));
+	GPIO_PinWrite(GPIOA, LCD_DB5_PIN, data & (1 << 5));
+	GPIO_PinWrite(GPIOA, LCD_DB4_PIN, data & (1 << 4));
 
 	// TODO: Enable the enable pin
+	GPIO_PinWrite(GPIOA, LCD_E_PIN, SET_OUTPUT);
 
 	// wait 1 ms
 	LCD_Delay(LCD_DATA_DELAY);
 	// TODO: Disable the enable pin
+	GPIO_PinWrite(GPIOA, LCD_E_PIN, RESET_OUTPUT);
 
 	// wait 1 ms
 	LCD_Delay(LCD_DATA_DELAY);
 
 	// TODO: prepare DATA to send - set up GPIO pins according to data being send (one GPIO = one bit from "data")
-
+	GPIO_PinWrite(GPIOA, LCD_DB7_PIN, data & (1 << 3));
+	GPIO_PinWrite(GPIOA, LCD_DB6_PIN, data & (1 << 2));
+	GPIO_PinWrite(GPIOA, LCD_DB5_PIN, data & (1 << 1));
+	GPIO_PinWrite(GPIOA, LCD_DB4_PIN, data & (1 << 0));
 
 	// TODO: Enable the enable pin
+	GPIO_PinWrite(GPIOA, LCD_E_PIN, SET_OUTPUT);
 
 	// wait 1 ms
 	LCD_Delay(LCD_DATA_DELAY);
 	// TODO: Disable the enable pin
+	GPIO_PinWrite(GPIOA, LCD_E_PIN, RESET_OUTPUT);
 
 	//GPIO_PortClear(LCD_RS_GPIO,1 << LCD_RS_PIN);
 	// Set the minimum delay for the next command

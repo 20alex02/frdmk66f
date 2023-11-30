@@ -1190,11 +1190,11 @@
                            <setting name="compensationTimeInt" value="0"/>
                            <setting name="setDateTime" value="true"/>
                            <struct name="rtc_datetime">
-                              <setting name="year" value="2021"/>
+                              <setting name="year" value="2024"/>
                               <setting name="month" value="11"/>
-                              <setting name="day" value="15"/>
-                              <setting name="hour" value="16"/>
-                              <setting name="minute" value="43"/>
+                              <setting name="day" value="30"/>
+                              <setting name="hour" value="11"/>
+                              <setting name="minute" value="23"/>
                               <setting name="second" value="0"/>
                            </struct>
                            <setting name="setAlarm" value="false"/>
