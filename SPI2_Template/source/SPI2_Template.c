@@ -120,7 +120,6 @@ void DSPI_SlaveUserCallback(SPI_Type *base, dspi_slave_handle_t *handle, status_
 			slaveXfer->txData[0] = counter;
 			state = HEADER_RECEIVED;
 			break;
-		// NOTE: no break statement. incrementing counter and setting slaveXfer in both cases
 		case READ_COMPLETED:
 			PRINTF("read 2 completed\r\n");
 			++counter;
