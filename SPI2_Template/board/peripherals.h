@@ -12,6 +12,8 @@
 #include "fsl_common.h"
 #include "fsl_dspi.h"
 #include "fsl_adc16.h"
+#include "fsl_uart.h"
+#include "fsl_clock.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -34,6 +36,10 @@ extern "C" {
 #define ADC1_IRQHANDLER ADC1_IRQHandler
 /* Channel 0 (SE.13) conversion control group. */
 #define ADC1_CH0_CONTROL_GROUP 0
+/* Definition of peripheral ID */
+#define UART3_PERIPHERAL UART3
+/* Definition of the clock source frequency */
+#define UART3_CLOCK_SOURCE CLOCK_GetFreq(UART3_CLK_SRC)
 
 /***********************************************************************************************************************
  * Global variables
@@ -42,6 +48,7 @@ extern const dspi_slave_config_t SPI0_config;
 extern adc16_channel_config_t ADC1_channelsConfig[1];
 extern const adc16_config_t ADC1_config;
 extern const adc16_channel_mux_mode_t ADC1_muxMode;
+extern const uart_config_t UART3_config;
 
 /***********************************************************************************************************************
  * Initialization functions

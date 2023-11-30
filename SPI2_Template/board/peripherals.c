@@ -208,6 +208,55 @@ static void ADC1_init(void) {
 }
 
 /***********************************************************************************************************************
+ * UART3 initialization code
+ **********************************************************************************************************************/
+/* clang-format off */
+/* TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
+instance:
+- name: 'UART3'
+- type: 'uart'
+- mode: 'polling'
+- custom_name_enabled: 'false'
+- type_id: 'uart_9b45c456566d03f79ecfe90751c10bb4'
+- functional_group: 'BOARD_InitPeripherals'
+- peripheral: 'UART3'
+- config_sets:
+  - uartConfig_t:
+    - uartConfig:
+      - clockSource: 'BusInterfaceClock'
+      - clockSourceFreq: 'GetFreq'
+      - baudRate_Bps: '115200'
+      - parityMode: 'kUART_ParityDisabled'
+      - dataBitsCount: 'kUART_EightDataBits'
+      - stopBitCount: 'kUART_OneStopBit'
+      - enableMatchAddress1: 'false'
+      - matchAddress1: '0'
+      - enableMatchAddress2: 'false'
+      - matchAddress2: '0'
+      - txFifoWatermark: '0'
+      - rxFifoWatermark: '1'
+      - idleType: 'kUART_IdleTypeStartBit'
+      - enableTx: 'true'
+      - enableRx: 'true'
+    - quick_selection: 'QuickSelection1'
+ * BE CAREFUL MODIFYING THIS COMMENT - IT IS YAML SETTINGS FOR TOOLS **********/
+/* clang-format on */
+const uart_config_t UART3_config = {
+  .baudRate_Bps = 115200UL,
+  .parityMode = kUART_ParityDisabled,
+  .stopBitCount = kUART_OneStopBit,
+  .txFifoWatermark = 0U,
+  .rxFifoWatermark = 1U,
+  .idleType = kUART_IdleTypeStartBit,
+  .enableTx = true,
+  .enableRx = true
+};
+
+static void UART3_init(void) {
+  UART_Init(UART3_PERIPHERAL, &UART3_config, UART3_CLOCK_SOURCE);
+}
+
+/***********************************************************************************************************************
  * Initialization functions
  **********************************************************************************************************************/
 void BOARD_InitPeripherals(void)
@@ -215,6 +264,7 @@ void BOARD_InitPeripherals(void)
   /* Initialize components */
   SPI0_init();
   ADC1_init();
+  UART3_init();
 }
 
 /***********************************************************************************************************************
