@@ -196,6 +196,7 @@ void LCD_SendData(uint8_t data, MessageType_t messageType)
 	// wait until minimum delay after the last command/data transfer
 	while((SysTick->CTRL & SysTick_CTRL_COUNTFLAG_Msk) == 0);
 	// TODO: Set RS pin to 0 or 1
+	GPIO_PinWrite(base, pin, output)
 
 	// TODO: Reset the RW pin
 
