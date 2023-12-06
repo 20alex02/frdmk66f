@@ -179,6 +179,7 @@ pin_labels:
 void BOARD_InitBootPins(void)
 {
     BOARD_InitPins();
+    BOARD_InitBUTTONsPins();
     BOARD_InitDEBUG_UARTPins();
     LCD_InitPins();
 }
@@ -224,7 +225,7 @@ void BOARD_InitPins(void)
 /*
  * TEXT BELOW IS USED AS SETTING FOR TOOLS *************************************
 BOARD_InitBUTTONsPins:
-- options: {callFromInitBoot: 'false', prefix: BOARD_, coreID: core0, enableClock: 'true'}
+- options: {callFromInitBoot: 'true', prefix: BOARD_, coreID: core0, enableClock: 'true'}
 - pin_list:
   - {pin_num: B2, peripheral: GPIOD, signal: 'GPIO, 11', pin_signal: PTD11/LLWU_P25/SPI2_PCS0/SDHC0_CLKIN/LPUART0_CTS_b/FB_A19, direction: INPUT, gpio_interrupt: kPORT_InterruptFallingEdge,
     pull_select: up, pull_enable: enable}
