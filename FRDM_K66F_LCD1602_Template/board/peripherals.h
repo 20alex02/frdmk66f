@@ -12,8 +12,6 @@
 #include "fsl_common.h"
 #include "fsl_dac.h"
 #include "fsl_rtc.h"
-#include "fsl_gpio.h"
-#include "fsl_port.h"
 
 #if defined(__cplusplus)
 extern "C" {
@@ -31,22 +29,6 @@ extern "C" {
 #define RTC_1_SECONDS_IRQN RTC_Seconds_IRQn
 /* RTC_1 interrupt handler identifier. */
 #define RTC_1_SECONDS_IRQHANDLER RTC_Seconds_IRQHandler
-/* Alias for GPIOD peripheral */
-#define GPIOD_GPIO GPIOD
-/* Alias for PORTD */
-#define GPIOD_PORT PORTD
-/* GPIOD interrupt vector ID (number). */
-#define GPIOD_IRQN PORTD_IRQn
-/* GPIOD interrupt handler identifier. */
-#define GPIOD_IRQHANDLER PORTD_IRQHandler
-/* Alias for GPIOA peripheral */
-#define GPIOA_GPIO GPIOA
-/* Alias for PORTA */
-#define GPIOA_PORT PORTA
-/* GPIOA interrupt vector ID (number). */
-#define GPIOA_IRQN PORTA_IRQn
-/* GPIOA interrupt handler identifier. */
-#define GPIOA_IRQHANDLER PORTA_IRQHandler
 
 /***********************************************************************************************************************
  * Global variables
