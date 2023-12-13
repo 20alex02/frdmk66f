@@ -39,6 +39,61 @@
 #define SECOND_POS 12
 #define ZERO_CHAR_VAL 48
 
+volatile bool running = true;
+/* PORTA_IRQn interrupt handler */
+void GPIOA_IRQHANDLER(void) {
+  /* Get pin flags */
+  uint32_t pin_flags = GPIO_PortGetInterruptFlags(GPIOA);
+
+  /* Place your interrupt code here */
+  running = !running;
+  if (running) {
+	  RTC_StartTimer(RTC_1_PERIPHERAL);
+  } else {
+	  RTC_StopTimer(RTC_1_PERIPHERAL);
+  }
+
+  /* Clear pin flags */
+  GPIO_PortClearInterruptFlags(GPIOA, pin_flags);
+
+  /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F
+     Store immediate overlapping exception return operation might vector to incorrect interrupt. */
+  #if defined __CORTEX_M && (__CORTEX_M == 4U)
+    __DSB();
+  #endif
+}
+
+const rtc_datetime_t start_of_year_datetime = {
+  .year = 2023,  // Change this to the desired year
+  .month = 1,    // January
+  .day = 1,      // 1st day of the month
+  .hour = 0,     // Midnight
+  .minute = 0,   // 0 minutes
+  .second = 0    // 0 seconds
+};
+/* PORTD_IRQn interrupt handler */
+void GPIOD_IRQHANDLER(void) {
+  /* Get pin flags */
+  uint32_t pin_flags = GPIO_PortGetInterruptFlags(GPIOD);
+
+  /* Place your interrupt code here */
+  RTC_StopTimer(RTC_1_PERIPHERAL);
+  RTC_SetDatetime(RTC_1_PERIPHERAL, &start_of_year_datetime);
+  RTC_StartTimer(RTC_1_PERIPHERAL);
+  running = true;
+
+  /* Clear pin flags */
+  GPIO_PortClearInterruptFlags(GPIOD, pin_flags);
+
+  /* Add for ARM errata 838869, affects Cortex-M4, Cortex-M4F
+     Store immediate overlapping exception return operation might vector to incorrect interrupt. */
+  #if defined __CORTEX_M && (__CORTEX_M == 4U)
+    __DSB();
+  #endif
+}
+
+
+
 /* RTC second interrupt handler */
 bool update_rdt = true;
 
@@ -75,26 +130,26 @@ int main(void)
 
     // Initialize the LCD
     LCD_4BitsInit(BOARD_BOOTCLOCKHSRUN_CORE_CLOCK, false, false);
-
     // main loop of the demo application
     while (1)
       {
-  		// get current date and time
-  		RTC_GetDatetime(RTC_1_PERIPHERAL, &rdt);
-  		// convert date and time to strings
-  		set_two_digit(date_str, DAY_POS, rdt.day);
-  		set_two_digit(date_str, MONTH_POS, rdt.month);
-  		set_four_digit(date_str, YEAR_POS, rdt.year);
-  		set_two_digit(time_str, HOUR_POS, rdt.hour);
-  		set_two_digit(time_str, MINUTE_POS, rdt.minute);
-  		set_two_digit(time_str, SECOND_POS, rdt.second);
-  		// display date and time
-  		LCD_SetPosition(0, 0);
-  		LCD_Print(date_str);
-  		LCD_SetPosition(0, 1);
-  		LCD_Print(time_str);
-  		// wait for next second
-  		__WFI();
-
+    	if (running) {
+      		// get current date and time
+      		RTC_GetDatetime(RTC_1_PERIPHERAL, &rdt);
+      		// convert date and time to strings
+      		set_two_digit(date_str, DAY_POS, rdt.day);
+      		set_two_digit(date_str, MONTH_POS, rdt.month);
+      		set_four_digit(date_str, YEAR_POS, rdt.year);
+      		set_two_digit(time_str, HOUR_POS, rdt.hour);
+      		set_two_digit(time_str, MINUTE_POS, rdt.minute);
+      		set_two_digit(time_str, SECOND_POS, rdt.second);
+      		// display date and time
+      		LCD_SetPosition(0, 0);
+      		LCD_Print(date_str);
+      		LCD_SetPosition(0, 1);
+      		LCD_Print(time_str);
+      		// wait for next second
+      		__WFI();
+    	}
       }
 }
